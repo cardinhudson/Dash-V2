@@ -41,7 +41,9 @@ dist/
 *.rar
 
 # Exceções - arquivos específicos que devem ser incluídos
-!KE5Z.7z 
+!KE5Z.7z
+!"Dados SAPIENS.xlsx"
+!Fornecedores.xlsx 
  
 # Saidas do projeto 
 KE5Z/ 
