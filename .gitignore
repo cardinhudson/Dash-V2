@@ -42,6 +42,7 @@ dist/
 
 # Exceções - arquivos específicos que devem ser incluídos
 !KE5Z.7z
+!KE5Z.zip
 !"Dados SAPIENS.xlsx"
 !Fornecedores.xlsx 
  
