@@ -1,0 +1,55 @@
+# Python 
+__pycache__/ 
+*.py[cod] 
+*.class 
+*.pyo 
+ 
+# Virtual env 
+venv/ 
+.env/ 
+.venv/ 
+ENV/ 
+ 
+# IDE/OS 
+.vscode/ 
+.idea/ 
+.DS_Store 
+Thumbs.db 
+ 
+# Jupyter/Notebook checkpoints 
+.ipynb_checkpoints/ 
+ 
+# Logs 
+*.log 
+ 
+# Streamlit 
+.streamlit/ 
+ 
+# Build/Dist 
+build/ 
+dist/ 
+*.egg-info/ 
+ 
+# Dados e artefatos grandes (mantidos fora do git) 
+*.parquet 
+*.csv 
+*.xlsx 
+*.xls 
+*.xlsm 
+*.zip 
+*.7z 
+*.rar 
+ 
+# Saidas do projeto 
+KE5Z/ 
+arquivos/ 
+Extra‡äes/ 
+Dashboard_KE5Z_FINAL_DESKTOP/KE5Z/ 
+ 
+# Credenciais/usuarios locais 
+usuarios.json 
+usuarios_*.json 
+ 
+# Ambientes python criados por instaladores 
+Scripts/ 
+pyvenv.cfg
