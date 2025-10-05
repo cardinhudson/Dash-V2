@@ -283,10 +283,15 @@ else:
 # Filtro 2: Período (com cache otimizado) - usar df_total para opções completas
 periodo_opcoes = get_filter_options(df_total, 'Período')
 periodo_selecionado = st.sidebar.selectbox("Selecione o Período:", periodo_opcoes)
+# Guardar seleção para outros gráficos usarem de forma consistente
+st.session_state['filtro_periodo_selecionado'] = periodo_selecionado
 if periodo_selecionado != "Todos":
     # Converter para float para comparação correta com valores numéricos
-    periodo_valor = float(periodo_selecionado)
-    df_filtrado = df_filtrado[df_filtrado['Período'] == periodo_valor]
+    try:
+        periodo_valor = float(periodo_selecionado)
+        df_filtrado = df_filtrado[df_filtrado['Período'] == periodo_valor]
+    except Exception:
+        pass
 
 # Filtro 3: Centro cst (com cache otimizado)
 if 'Centro cst' in df_filtrado.columns:
@@ -435,6 +440,13 @@ if 'Type 05' in df_filtrado.columns:
     @st.cache_data(ttl=900, max_entries=2)
     def create_type05_chart(df_data):
         try:
+            # Aplicar filtro de mês consistente (caso a filtragem global falhe)
+            sel = st.session_state.get('filtro_periodo_selecionado', 'Todos')
+            if sel != 'Todos' and 'Período' in df_data.columns:
+                try:
+                    df_data = df_data[pd.to_numeric(df_data['Período'], errors='coerce') == float(sel)]
+                except Exception:
+                    pass
             type05_data = df_data.groupby('Type 05')['Valor'].sum().reset_index()
             type05_data = type05_data.sort_values('Valor', ascending=False)
             
@@ -444,7 +456,7 @@ if 'Type 05' in df_filtrado.columns:
                 color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True)),
                 tooltip=['Type 05:N', 'Valor:Q']
             ).properties(
-                title='Soma do Valor por Type 05',
+                title=f"Soma do Valor por Type 05{'' if sel=='Todos' else f' - Mês {sel:g}'}",
                 height=400
             )
             
@@ -462,6 +474,13 @@ if 'Type 06' in df_filtrado.columns:
     @st.cache_data(ttl=900, max_entries=2)
     def create_type06_chart(df_data):
         try:
+            # Aplicar filtro de mês consistente (caso a filtragem global falhe)
+            sel = st.session_state.get('filtro_periodo_selecionado', 'Todos')
+            if sel != 'Todos' and 'Período' in df_data.columns:
+                try:
+                    df_data = df_data[pd.to_numeric(df_data['Período'], errors='coerce') == float(sel)]
+                except Exception:
+                    pass
             type06_data = df_data.groupby('Type 06')['Valor'].sum().reset_index()
             type06_data = type06_data.sort_values('Valor', ascending=False)
             
@@ -471,7 +490,7 @@ if 'Type 06' in df_filtrado.columns:
                 color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True)),
                 tooltip=['Type 06:N', 'Valor:Q']
             ).properties(
-                title='Soma do Valor por Type 06',
+                title=f"Soma do Valor por Type 06{'' if sel=='Todos' else f' - Mês {sel:g}'}",
                 height=400
             )
             
@@ -484,8 +503,95 @@ if 'Type 06' in df_filtrado.columns:
     if chart_type06:
         st.altair_chart(chart_type06, use_container_width=True)
 
+# Gráfico por Texto (mesmo modelo e cores)
+texto_col = None
+for candidate in ['Texto', 'Texto breve', 'Descrição Material']:
+    if candidate in df_filtrado.columns:
+        texto_col = candidate
+        break
+
+if texto_col:
+    # Controles específicos acima do gráfico
+    col_mes, col_t7, col_top = st.columns([1, 2, 1])
+
+    # Filtro de mês (Período)
+    meses_opcoes = ["Todos"]
+    if 'Período' in df_filtrado.columns:
+        try:
+            meses = sorted([m for m in pd.to_numeric(df_filtrado['Período'], errors='coerce').dropna().unique().tolist()])
+            meses_opcoes += meses
+        except Exception:
+            pass
+    mes_sel = col_mes.selectbox("Mês (Período)", meses_opcoes, index=0)
+
+    # Filtro de Type 07
+    type07_opcoes = ["Todos"]
+    if 'Type 07' in df_filtrado.columns:
+        type07_opcoes += sorted(df_filtrado['Type 07'].dropna().astype(str).unique().tolist())
+    type07_sel = col_t7.multiselect("Type 07", type07_opcoes, default=["Todos"]) 
+
+    # Limitador (Pareto)
+    top_map = {"Top 10": 10, "Top 15": 15, "Top 20": 20, "Total": None}
+    top_label = col_top.selectbox("Limite (Pareto)", list(top_map.keys()), index=0)
+    top_n = top_map[top_label]
+
+    @st.cache_data(ttl=900, max_entries=2)
+    def create_texto_chart(df_data, col_name, top_n_param):
+        try:
+            texto_data = (
+                df_data.assign(**{col_name: df_data[col_name].astype(str)})
+                .groupby(col_name)['Valor']
+                .sum()
+                .reset_index()
+                .sort_values('Valor', ascending=False)
+            )
+            if top_n_param is not None and len(texto_data) > top_n_param:
+                texto_data = texto_data.head(top_n_param)
+
+            chart = alt.Chart(texto_data).mark_bar().encode(
+                x=alt.X(f'{col_name}:N', title=col_name, sort='-y'),
+                y=alt.Y('Valor:Q', title='Soma do Valor'),
+                color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True)),
+                tooltip=[f'{col_name}:N', 'Valor:Q']
+            ).properties(
+                title=f'Soma do Valor por {col_name}',
+                height=400
+            )
+            return chart
+        except Exception as e:
+            st.error(f"Erro no gráfico {col_name}: {e}")
+            return None
+
+    # Aplicar filtros locais para o gráfico
+    df_texto = df_filtrado.copy()
+    if mes_sel != "Todos" and 'Período' in df_texto.columns:
+        try:
+            df_texto = df_texto[pd.to_numeric(df_texto['Período'], errors='coerce') == float(mes_sel)]
+        except Exception:
+            pass
+    if type07_sel and "Todos" not in type07_sel and 'Type 07' in df_texto.columns:
+        df_texto = df_texto[df_texto['Type 07'].astype(str).isin(type07_sel)]
+
+    chart_texto = create_texto_chart(df_texto, texto_col, top_n)
+    if chart_texto:
+        st.altair_chart(chart_texto, use_container_width=True)
+
 # Tabela dinâmica com cores
-df_pivot = df_filtrado.pivot_table(index='USI', columns='Período', values='Valor', aggfunc='sum', margins=True, margins_name='Total', fill_value=0)
+df_pivot = df_filtrado.pivot_table(
+    index='USI', columns='Período', values='Valor', aggfunc='sum',
+    margins=True, margins_name='Total', fill_value=0
+)
+
+# Remover linhas totalmente zeradas (exceto a linha Total) para compactar a visualização
+if not df_pivot.empty:
+    colunas_sem_total = [c for c in df_pivot.columns if c != 'Total']
+    if colunas_sem_total:
+        mask_totalmente_zero = (df_pivot[colunas_sem_total].sum(axis=1) == 0)
+    else:
+        mask_totalmente_zero = (df_pivot.sum(axis=1) == 0)
+    df_pivot_compact = df_pivot.loc[~((df_pivot.index != 'Total') & mask_totalmente_zero)]
+else:
+    df_pivot_compact = df_pivot
 st.subheader("Tabela Dinâmica - Soma do Valor por USI e Período")
 
 # Aplicar formatação com cores (verde para positivo, vermelho para negativo)
@@ -497,8 +603,12 @@ def colorir_valores(val):
             return 'color: #27ae60; font-weight: bold;'  # Verde para positivo
     return ''
 
-styled_pivot = df_pivot.style.format('R$ {:,.2f}').map(colorir_valores, subset=pd.IndexSlice[:, :])
-st.dataframe(styled_pivot, use_container_width=True)
+styled_pivot = df_pivot_compact.style.format('R$ {:,.2f}').map(colorir_valores, subset=pd.IndexSlice[:, :])
+
+# Altura dinâmica para evitar "linhas vazias" visuais
+num_rows = len(df_pivot_compact)
+altura = max(220, min(600, 64 + 32 * num_rows))  # cabeçalho + altura por linha
+st.dataframe(styled_pivot, use_container_width=True, height=altura)
 
 # Botão de download da Tabela Dinâmica (logo abaixo da tabela)
 if st.button("📥 Baixar Tabela Dinâmica (Excel)", use_container_width=True, key="download_pivot"):
@@ -530,7 +640,7 @@ if len(df_filtrado) > display_limit:
 else:
     df_display = df_filtrado
 
-st.dataframe(df_display, use_container_width=True)
+st.dataframe(df_display, use_container_width=True, height=600)
 
 # Botão de download da Tabela Filtrada (logo abaixo da tabela)
 if st.button("📥 Baixar Tabela Filtrada (Excel)", use_container_width=True, key="download_filtered"):
@@ -617,7 +727,7 @@ if all(col in df_filtrado.columns for col in ['Type 05', 'Type 06', 'Type 07']):
         return ''
 
     styled = tabela_final.style.format({'Valor': 'R$ {:,.2f}'}).map(colorir_valores, subset=['Valor'])
-    st.dataframe(styled, use_container_width=True)
+    st.dataframe(styled, use_container_width=True, height=500)
 
     # Download
     if st.button("📥 Baixar Soma por Types (Excel)", use_container_width=True, key="agg_download_types"):
