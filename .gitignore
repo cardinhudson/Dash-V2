@@ -47,8 +47,8 @@ dist/
 !Fornecedores.xlsx 
  
 # Saidas do projeto 
-KE5Z/ 
-arquivos/ 
+# KE5Z/ - INCLUÍDO (dados processados essenciais)
+# arquivos/ - INCLUÍDO (arquivos de saída essenciais) 
 Extra��es/ 
 Dashboard_KE5Z_FINAL_DESKTOP/KE5Z/ 
  
