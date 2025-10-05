@@ -38,12 +38,15 @@ dist/
 *.xlsm 
 *.zip 
 *.7z 
-*.rar 
+*.rar
+
+# Exceções - arquivos específicos que devem ser incluídos
+!KE5Z.7z 
  
 # Saidas do projeto 
 KE5Z/ 
 arquivos/ 
-Extra��es/ 
+Extra��es/ 
 Dashboard_KE5Z_FINAL_DESKTOP/KE5Z/ 
  
 # Credenciais/usuarios locais 
