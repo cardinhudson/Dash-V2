@@ -1,0 +1,26 @@
+========================================
+    COMANDOS PARA EXECUTAR O PROJETO
+========================================
+
+1. EXECUTAR EXTRAÇÃO:
+   C:\Users\u235107\AppData\Local\Programs\Python\Python313\python.exe "Extração.py"
+
+2. EXECUTAR DASHBOARD:
+   C:\Users\u235107\AppData\Local\Programs\Python\Python313\python.exe -m streamlit run Dash.py
+
+3. VERIFICAR PROCESSOS PYTHON:
+   tasklist | findstr python
+
+4. PARAR PROCESSOS PYTHON:
+   taskkill /f /im python.exe
+
+========================================
+    STATUS ATUAL
+========================================
+✅ Script Extração.py: RODANDO EM BACKGROUND
+✅ Dashboard: Disponível em http://localhost:8501
+✅ Arquivos parquet: Atualizados
+✅ Problema pyvenv.cfg: RESOLVIDO
+
+========================================
+
