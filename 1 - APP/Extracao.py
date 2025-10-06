@@ -408,48 +408,59 @@ if df_fornecedores is not None:
     # mudar o nome da coluna Fornecedor para Fornec.
     df_fornecedores.rename(columns={'Fornecedor': 'Fornec.'}, inplace=True)
 
-# mudar a coluna fornec. para string
-df_fornecedores['Fornec.'] = df_fornecedores['Fornec.'].astype(str)
-
-# merge o df_total com df_fornecedores pela coluna Fornec. retornando a coluna Fornecedor
-df_total = pd.merge(
-    df_total,
-    df_fornecedores[['Fornec.', 'Nome do fornecedor']],
-    on='Fornec.',
-    how='left',
-)
+# mudar a coluna fornec. para string (se arquivo existir)
+if df_fornecedores is not None:
+    df_fornecedores['Fornec.'] = df_fornecedores['Fornec.'].astype(str)
+    
+    # merge o df_total com df_fornecedores pela coluna Fornec. retornando a coluna Fornecedor
+    df_total = pd.merge(
+        df_total,
+        df_fornecedores[['Fornec.', 'Nome do fornecedor']],
+        on='Fornec.',
+        how='left',
+    )
+    print("Merge com fornecedores concluído!")
+else:
+    print("Pulando merge com fornecedores - arquivo não encontrado.")
 # mudar o nome da coluna Nome do fornecedor para Fornecedor
 df_total.rename(columns={'Nome do fornecedor': 'Fornecedor'}, inplace=True)
 
 
 
 # Atualizar o nome do fornecedor com as provisoes
-# Precimos ler o arquivo Dados SAPIENS.xlsx na pasta do projeto na guia Hist_prov 
+# Precimos ler o arquivo Dados SAPIENS.xlsx na pasta do projeto na guia Hist_prov (se existir)
 # desconsiderar a primeira linha do arquivo
 arquivo_hist_prov = r"Dados SAPIENS.xlsx"
-df_hist_prov = pd.read_excel(arquivo_hist_prov, sheet_name='Hist_prov', skiprows=1)
-# excluir todas as colunas menos as colunas 'Nome do fornecedor', '20carac'
-df_hist_prov = df_hist_prov[['Nome do fornecedor', '20carac']]
-# Remover os espaços da coluna '20carac'
-df_hist_prov['20carac'] = df_hist_prov['20carac'].str.strip()
+if os.path.exists(arquivo_hist_prov):
+    df_hist_prov = pd.read_excel(arquivo_hist_prov, sheet_name='Hist_prov', skiprows=1)
+else:
+    print("AVISO: Arquivo Dados SAPIENS.xlsx não encontrado. Pulando merge com Hist_prov.")
+    df_hist_prov = None
+# excluir todas as colunas menos as colunas 'Nome do fornecedor', '20carac' (se arquivo existir)
+if df_hist_prov is not None:
+    df_hist_prov = df_hist_prov[['Nome do fornecedor', '20carac']]
+    # Remover os espaços da coluna '20carac'
+    df_hist_prov['20carac'] = df_hist_prov['20carac'].str.strip()
 
-# remover linhas duplicadas pela coluna '20carac'
-df_hist_prov = df_hist_prov.drop_duplicates(subset=['20carac'])
-
-# criar uma coluna no df_total chamada '20carac' (primeiros 20 caracteres do Fornec.) 
-df_total['20carac'] = df_total['Texto'].astype(str).str[:20]
-# Remover os espaços da coluna '20carac'
-df_total['20carac'] = df_total['20carac'].str.strip()
-
-
-
-# merge o df_total com df_hist_prov pela coluna 20carac retornando a coluna 'Nome do fornecedor'
-df_total = pd.merge(
-    df_total,
-    df_hist_prov[['20carac', 'Nome do fornecedor']],
-    on='20carac',
-    how='left',
-)
+# remover linhas duplicadas pela coluna '20carac' (se arquivo existir)
+if df_hist_prov is not None:
+    df_hist_prov = df_hist_prov.drop_duplicates(subset=['20carac'])
+    
+    # criar uma coluna no df_total chamada '20carac' (primeiros 20 caracteres do Fornec.) 
+    df_total['20carac'] = df_total['Texto'].astype(str).str[:20]
+    # Remover os espaços da coluna '20carac'
+    df_total['20carac'] = df_total['20carac'].str.strip()
+    
+    # merge o df_total com df_hist_prov pela coluna 20carac retornando a coluna 'Nome do fornecedor'
+    df_total = pd.merge(
+        df_total,
+        df_hist_prov[['20carac', 'Nome do fornecedor']],
+        on='20carac',
+        how='left',
+    )
+    print("Merge com Hist_prov concluído!")
+else:
+    print("Pulando merge com Hist_prov - arquivo não encontrado.")
 
 # Se a coluna 'Nome do fornecedor' não for nula, substituir o valor da coluna Fornecedor pelo valor da coluna 'Nome do fornecedor'
 if 'Nome do fornecedor' in df_total.columns and 'Fornecedor' in df_total.columns:
