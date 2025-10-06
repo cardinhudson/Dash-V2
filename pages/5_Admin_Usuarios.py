@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import sys
 import os
 
@@ -51,7 +51,7 @@ st.set_page_config(
     page_title="Admin - Usuários",
     page_icon="👑",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Verificar autenticação

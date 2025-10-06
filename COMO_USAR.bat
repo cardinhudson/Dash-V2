@@ -12,12 +12,12 @@ echo.
 echo 📋 INSTRUÇÕES RÁPIDAS:
 echo.
 echo 1️⃣ PRIMEIRA VEZ:
-echo    • Execute: abrir_dash.bat
+echo    • Execute: ABRIR_AGORA.bat
 echo    • Aguarde a instalação automática
 echo    • O dashboard abrirá no navegador
 echo.
 echo 2️⃣ PRÓXIMAS VEZES:
-echo    • Execute: abrir_dash.bat
+echo    • Execute: ABRIR_AGORA.bat
 echo    • O dashboard abrirá automaticamente
 echo.
 echo 3️⃣ PROBLEMAS COMUNS:

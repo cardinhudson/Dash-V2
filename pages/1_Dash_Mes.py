@@ -1,4 +1,4 @@
-# %%
+﻿# %%
 import streamlit as st
 import pandas as pd
 import os
@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Dashboard KE5Z - Mês",
     page_icon="📅",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Configurações para otimizar conexão e performance
@@ -300,51 +300,26 @@ with col3:
 
 st.markdown("---")
 
-# ============= FILTRO PRINCIPAL: SELEÇÃO DE MÊS =============
+# ============= FILTRO PRINCIPAL: SELEÇÃO DE PERÍODO =============
 st.sidebar.markdown("---")
-st.sidebar.subheader("📅 Filtro Principal - Mês")
+st.sidebar.subheader("📅 Filtro Principal - Período")
 
-# Mapear números para nomes dos meses (GLOBAL)
-meses_nomes = {
-    1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
-    5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
-    9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
-}
-
-# Função auxiliar para obter nome do mês de forma segura
-def get_nome_mes_seguro(mes_selecionado):
-    """Retorna o nome do mês de forma segura, lidando com 'Todos' e valores inválidos"""
-    try:
-        if isinstance(mes_selecionado, str) and mes_selecionado == "Todos":
-            return "Todos os Meses"
-        mes_num = int(mes_selecionado)
-        return meses_nomes.get(mes_num, f'Mês {mes_selecionado}')
-    except (ValueError, TypeError):
-        return f'Período {mes_selecionado}'
-
-# Verificar se existe coluna 'Mes' ou 'Período' para filtro mensal
-coluna_mes = None
-if 'Mes' in df_total.columns:
-    coluna_mes = 'Mes'
-elif 'Período' in df_total.columns:
-    coluna_mes = 'Período'
-
-if coluna_mes:
-    meses_disponiveis = sorted(df_total[coluna_mes].dropna().unique())
+# Verificar se existe coluna 'Período' para filtro
+if 'Período' in df_total.columns:
+    periodos_disponiveis = sorted(df_total['Período'].dropna().unique())
     
-    # Seleção de mês único
-    mes_selecionado = st.sidebar.selectbox(
-        "🎯 Selecione UM mês para análise:",
-        options=meses_disponiveis,
-        format_func=lambda x: f"{get_nome_mes_seguro(x)} ({x})",
-        index=len(meses_disponiveis)-1 if meses_disponiveis else 0  # Último mês disponível
+    # Seleção de período único
+    periodo_selecionado = st.sidebar.selectbox(
+        "🎯 Selecione UM período para análise:",
+        options=periodos_disponiveis,
+        index=len(periodos_disponiveis)-1 if periodos_disponiveis else 0  # Último período disponível
     )
     
-    # Aplicar filtro de mês
-    df_mes = df_total[df_total[coluna_mes] == mes_selecionado].copy()
+    # Aplicar filtro de período
+    df_mes = df_total[df_total['Período'] == periodo_selecionado].copy()
     
-    st.sidebar.success(f"📊 **{get_nome_mes_seguro(mes_selecionado)}**")
-    st.sidebar.info(f"📈 {len(df_mes):,} registros neste mês")
+    st.sidebar.success(f"📊 **Período {periodo_selecionado}**")
+    st.sidebar.info(f"📈 {len(df_mes):,} registros neste período")
     
     # Mostrar economia de dados
     reducao_percentual = (1 - len(df_mes) / len(df_total)) * 100
@@ -353,7 +328,7 @@ if coluna_mes:
 else:
     st.sidebar.error("❌ Coluna 'Mes' ou 'Período' não encontrada nos dados!")
     df_mes = df_total.copy()
-    mes_selecionado = "Todos"
+    periodo_selecionado = "Todos"
 
 # Filtros (COMPACTO)
 st.sidebar.markdown("---")
@@ -450,7 +425,7 @@ if not df_mes.empty:
         st.metric(
             "💰 Valor Total", 
             f"R$ {total_valor:,.2f}",
-            help=f"Soma total dos valores para {get_nome_mes_seguro(mes_selecionado)}"
+            help=f"Soma total dos valores para Período {periodo_selecionado}"
         )
     
     with col2:
@@ -494,8 +469,8 @@ if not df_mes.empty:
                 df_waterfall = pd.read_parquet(arquivo_waterfall)
                 
                 # Aplicar mesmo filtro de mês que foi aplicado aos dados originais
-                if coluna_mes and coluna_mes in df_waterfall.columns:
-                    df_waterfall_mes = df_waterfall[df_waterfall[coluna_mes] == mes_selecionado].copy()
+                if 'Período' in df_waterfall.columns:
+                    df_waterfall_mes = df_waterfall[df_waterfall['Período'] == periodo_selecionado].copy()
                 else:
                     df_waterfall_mes = df_waterfall.copy()
                 
@@ -509,12 +484,11 @@ if not df_mes.empty:
         col1, col2 = st.columns(2)
         
         with col1:
-            # Gráfico por Type 05 - USA DADOS WATERFALL OTIMIZADOS
+            # Gráfico por Type 05 - USA DADOS FILTRADOS
             st.subheader("📊 Análise por Type 05")
-            df_graph = load_waterfall_for_graphs()
             
-            if 'Type 05' in df_graph.columns and 'Valor' in df_graph.columns:
-                type05_data = df_graph.groupby('Type 05')['Valor'].sum().sort_values(ascending=False)
+            if 'Type 05' in df_mes.columns and 'Valor' in df_mes.columns:
+                type05_data = df_mes.groupby('Type 05')['Valor'].sum().sort_values(ascending=False)
                 
                 fig_type05 = go.Figure(data=[
                     go.Bar(
@@ -524,7 +498,7 @@ if not df_mes.empty:
                     )
                 ])
                 fig_type05.update_layout(
-                    title=f"Valores por Type 05 - {get_nome_mes_seguro(mes_selecionado)}",
+                    title=f"Valores por Type 05 - Período {periodo_selecionado}",
                     xaxis_title="Type 05",
                     yaxis_title="Valor (R$)",
                     height=400
@@ -536,12 +510,11 @@ if not df_mes.empty:
                     st.caption("⚡ Gráfico otimizado com dados waterfall")
         
         with col2:
-            # Gráfico por Type 06 - USA DADOS WATERFALL OTIMIZADOS
+            # Gráfico por Type 06 - USA DADOS FILTRADOS
             st.subheader("📈 Análise por Type 06")
-            df_graph = load_waterfall_for_graphs()
             
-            if 'Type 06' in df_graph.columns and 'Valor' in df_graph.columns:
-                type06_data = df_graph.groupby('Type 06')['Valor'].sum().sort_values(ascending=False)
+            if 'Type 06' in df_mes.columns and 'Valor' in df_mes.columns:
+                type06_data = df_mes.groupby('Type 06')['Valor'].sum().sort_values(ascending=False)
                 
                 fig_type06 = go.Figure(data=[
                     go.Bar(
@@ -551,7 +524,7 @@ if not df_mes.empty:
                     )
                 ])
                 fig_type06.update_layout(
-                    title=f"Valores por Type 06 - {get_nome_mes_seguro(mes_selecionado)}",
+                    title=f"Valores por Type 06 - Período {periodo_selecionado}",
                     xaxis_title="Type 06",
                     yaxis_title="Valor (R$)",
                     height=400
@@ -580,7 +553,7 @@ if not df_mes.empty:
                 )
             ])
             fig_usi.update_layout(
-                title=f"Distribuição por USI - {get_nome_mes_seguro(mes_selecionado)}",
+                title=f"Distribuição por USI - Período {periodo_selecionado}",
                 height=500
             )
             st.plotly_chart(fig_usi, use_container_width=True)
@@ -640,7 +613,7 @@ if not df_mes.empty:
     
     with tab4:
         # Tabela completa filtrada - USA ARQUIVOS ORIGINAIS (não waterfall)
-        st.subheader(f"📋 Dados Completos - {get_nome_mes_seguro(mes_selecionado)}")
+        st.subheader(f"📋 Dados Completos - Período {periodo_selecionado}")
         
         # Carregar dados originais para tabela completa
         @st.cache_data(ttl=3600, max_entries=2, persist="disk")
@@ -722,7 +695,7 @@ if not df_mes.empty:
             if st.button("📥 Preparar Download Excel"):
                 with st.spinner("Preparando arquivo com dados originais completos..."):
                     # Criar arquivo Excel com dados originais filtrados
-                    output_filename = f"KE5Z_{get_nome_mes_seguro(mes_selecionado).replace(' ', '_')}_filtrado.xlsx"
+                    output_filename = f"KE5Z_Periodo_{periodo_selecionado}_filtrado.xlsx"
                     
                     # SOLUÇÃO: Usar os MESMOS dados da tabela (df_mes) para garantir consistência
                     # Isso garante que o Excel tenha EXATAMENTE os mesmos dados e filtros da tabela exibida
@@ -799,8 +772,8 @@ st.markdown("---")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if coluna_mes:
-        st.info(f"📅 **Mês Selecionado**: {get_nome_mes_seguro(mes_selecionado)}")
+    if 'Período' in df_total.columns:
+        st.info(f"📅 **Período Selecionado**: {periodo_selecionado}")
 
 with col2:
     st.info(f"📊 **Registros Filtrados**: {len(df_mes):,}")

@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import os
 import sys
@@ -14,7 +14,7 @@ st.set_page_config(
     page_title="Total Accounts - Dashboard KE5Z",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Verificar autenticação - OBRIGATÓRIO no início de cada página
@@ -122,6 +122,7 @@ with st.sidebar.expander("🔍 Filtros Principais", expanded=True):
     # Filtro 2: Período
     periodo_opcoes = ["Todos"] + sorted(df_filtrado['Período'].dropna().astype(str).unique().tolist()) if 'Período' in df_filtrado.columns else ["Todos"]
     periodo_selecionado = st.selectbox("Período:", periodo_opcoes)
+    
     if periodo_selecionado != "Todos":
         df_filtrado = df_filtrado[df_filtrado['Período'].astype(str) == str(periodo_selecionado)]
 
@@ -259,15 +260,25 @@ def create_period_chart_total_accounts(df_data):
 def create_type05_chart_total_accounts(df_data):
     """Cria gráfico Type 05 otimizado - MESMO PADRÃO DO DASH PRINCIPAL"""
     try:
+        
+        # Verificar se as colunas existem
+        if 'Type 05' not in df_data.columns:
+            st.error("❌ Coluna 'Type 05' não encontrada!")
+            return None
+        if 'Valor' not in df_data.columns:
+            st.error("❌ Coluna 'Valor' não encontrada!")
+            return None
+            
         type05_data = df_data.groupby('Type 05')['Valor'].sum().reset_index()
         type05_data = type05_data.sort_values('Valor', ascending=False)
         
         import altair as alt
+        
+        # Criar o gráfico
         chart = alt.Chart(type05_data).mark_bar().encode(
             x=alt.X('Type 05:N', title='Type 05', sort='-y'),
             y=alt.Y('Valor:Q', title='Soma do Valor'),
-            color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True)),
-            tooltip=['Type 05:N', 'Valor:Q']
+            color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True))
         ).properties(
             title='Total Accounts - Soma do Valor por Type 05',
             height=400
@@ -276,6 +287,8 @@ def create_type05_chart_total_accounts(df_data):
         return chart
     except Exception as e:
         st.error(f"Erro no gráfico Type 05: {e}")
+        import traceback
+        st.error(f"Traceback: {traceback.format_exc()}")
         return None
 
 # Gráfico por Type 06 (mesmo padrão do Dash.py)
@@ -287,11 +300,12 @@ def create_type06_chart_total_accounts(df_data):
         type06_data = type06_data.sort_values('Valor', ascending=False)
         
         import altair as alt
+        
+        # Criar o gráfico
         chart = alt.Chart(type06_data).mark_bar().encode(
             x=alt.X('Type 06:N', title='Type 06', sort='-y'),
             y=alt.Y('Valor:Q', title='Soma do Valor'),
-            color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True)),
-            tooltip=['Type 06:N', 'Valor:Q']
+            color=alt.Color('Valor:Q', title='Valor', scale=alt.Scale(scheme='redyellowgreen', reverse=True))
         ).properties(
             title='Total Accounts - Soma do Valor por Type 06',
             height=400

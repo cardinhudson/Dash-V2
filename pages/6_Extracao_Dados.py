@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Extração de Dados - Dashboard KE5Z",
     page_icon="📦",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Verificar autenticação

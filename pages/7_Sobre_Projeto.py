@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import sys
 import os
 import json
@@ -67,7 +67,7 @@ st.set_page_config(
     page_title="Sobre o Projeto - Dashboard KE5Z",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Verificar autenticação
@@ -109,7 +109,7 @@ st.markdown("---")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric("💻 Linhas de Código", "3.000+", "Sistema completo")
+    st.metric("💻 Linhas de Código", "3.500+", "Sistema completo")
 
 with col2:
     st.metric("⚡ Otimização", "68%", "Memória reduzida")
@@ -118,7 +118,7 @@ with col3:
     st.metric("📊 Páginas", "7", "Funcionalidades completas")
 
 with col4:
-    st.metric("📦 TXT → Parquet", "10x menor", "Transformação inteligente")
+    st.metric("🎯 Filtros", "15+", "Análise avançada")
 
 # Objetivos do Projeto - Movidos para o início
 st.markdown("---")
@@ -131,6 +131,9 @@ st.markdown("""
 - 🔐 Sistema de autenticação robusto
 - 📱 Interface responsiva e intuitiva
 - ☁️ Compatibilidade com Streamlit Cloud
+- 🎯 **Análise Type 07 avançada:** Filtros específicos por Type 05, Type 06 e Período com seleção dinâmica de Top N
+- 📊 **Tabelas inteligentes:** Filtragem automática para mostrar apenas valores diferentes de zero
+- 🔧 **Interface limpa:** Remoção de mensagens de debug para melhor experiência do usuário
 - 📦 **Transformação inteligente de dados:** Conversão automática de arquivos TXT muito grandes em arquivos Parquet otimizados, reduzindo drasticamente o tamanho dos arquivos (até 10x menor) e melhorando significativamente a performance de carregamento e processamento
 """)
 
@@ -417,13 +420,17 @@ with col1:
         st.markdown("""
         ### 🏠 Dashboard Principal
         - **Gráficos dinâmicos** por Período, Type 05, Type 06
+        - **Análise Type 07** com filtros específicos (Type 05, Type 06, Período)
+        - **Top N dinâmico** (10, 15, 20, 30, 50, 100) para Type 07
         - **Tabelas interativas** com filtros avançados
         - **11 filtros principais** + 4 filtros avançados
+        - **Tabela pivot filtrada** (apenas valores ≠ 0)
         - **Exportação Excel** com formatação
         
         ### 📅 Dashboard Mensal
-        - **Análise focada** em um mês específico
-        - **Gráficos otimizados** com dados waterfall
+        - **Análise focada** em um período específico
+        - **Filtro de período** simplificado e funcional
+        - **Gráficos otimizados** com dados filtrados
         - **Performance superior** para análises detalhadas
         - **Download inteligente** com limites de segurança
         - **🛡️ Proteção Cloud:** 50.000 linhas máximo
@@ -433,8 +440,9 @@ with col1:
         ### 📊 Total Accounts
         - **Análise completa** do centro de lucro 02S
         - **100% otimizado** com dados waterfall
-        - **Gráficos mês a mês** com cores padronizadas
+        - **Gráficos Type 05 e Type 06** com cores padronizadas
         - **Tabelas dinâmicas** por USI e conta contábil
+        - **Interface limpa** sem mensagens de debug
         """)
 
     with st.expander("🔍 **ANÁLISES AVANÇADAS**", expanded=False):
@@ -626,8 +634,10 @@ with col2:
         ### 🔍 Filtros e Dimensões
         - **11 filtros principais:** USI, Período, Centro cst, etc.
         - **4 filtros avançados:** Oficina, Usuário, etc.
+        - **Filtros específicos Type 07:** Type 05, Type 06, Período, Top N
         - **Filtros em cascata** com dependências
         - **Cache otimizado** para performance
+        - **Filtros inteligentes:** Apenas valores diferentes de zero
         
         ### 📥 Exportações
         - **Excel formatado** com múltiplas opções
@@ -715,13 +725,15 @@ with st.expander("💻 **CÓDIGO E DESENVOLVIMENTO**", expanded=False):
         ### 📝 Estatísticas de Código
         
         **🎯 Principais Arquivos:**
-        - **Dash.py:** ~620 linhas (Dashboard principal)
-        - **Extração.py:** ~580 linhas (Processamento)
-        - **auth_simple.py:** ~420 linhas (Autenticação)
-        - **Dash_Mes.py:** ~750 linhas (Dashboard mensal)
-        - **Total accounts.py:** ~400 linhas (Análise total)
+        - **app.py:** ~730 linhas (Dashboard principal)
+        - **Extração.py:** ~610 linhas (Processamento)
+        - **auth_simple.py:** ~450 linhas (Autenticação)
+        - **Dash_Mes.py:** ~800 linhas (Dashboard mensal)
+        - **Total accounts.py:** ~550 linhas (Análise total)
+        - **Waterfall_Analysis.py:** ~400 linhas (Análise cascata)
+        - **IUD_Assistant.py:** ~500 linhas (Assistente IA)
         
-        **📊 Total Estimado:** ~3.000+ linhas de código
+        **📊 Total Estimado:** ~3.500+ linhas de código
         
         **🔧 Funcionalidades Implementadas:**
         - Sistema de cache multi-nível
@@ -729,6 +741,11 @@ with st.expander("💻 **CÓDIGO E DESENVOLVIMENTO**", expanded=False):
         - Detecção de ambiente (Cloud/Local)
         - Tratamento robusto de erros
         - Logging detalhado de operações
+        - Análise Type 07 com filtros específicos
+        - Filtros inteligentes para valores não-zero
+        - Interface limpa sem mensagens de debug
+        - Top N dinâmico para análises
+        - Tabelas pivot otimizadas
         """)
     
     with col2:
@@ -762,6 +779,16 @@ with st.expander("💻 **CÓDIGO E DESENVOLVIMENTO**", expanded=False):
         # Sistema de filtros em cascata
         # Aplicação automática em waterfall
         # Cache de opções para performance
+        # Filtros específicos Type 07
+        # Top N dinâmico (10, 15, 20, 30, 50, 100)
+        ```
+        
+        **📊 Tabelas Inteligentes:**
+        ```python
+        # Filtragem automática de valores zero
+        # Tabelas pivot otimizadas
+        # Formatação monetária brasileira
+        # Exportação Excel inteligente
         ```
         """)
 
@@ -1034,7 +1061,7 @@ st.markdown("""
         Desenvolvido com foco em performance, usabilidade e escalabilidade
     </p>
     <p style="color: #d0d0d0; font-size: 0.8rem; margin-top: 1rem;">
-        💻 3.000+ linhas de código • ⚡ 68% otimização • 🔐 Sistema seguro • 📊 7 páginas completas
+        💻 3.500+ linhas de código • ⚡ 68% otimização • 🔐 Sistema seguro • 📊 7 páginas completas • 🎯 15+ filtros avançados
     </p>
 </div>
 """, unsafe_allow_html=True)

@@ -145,7 +145,7 @@ def tela_login_simples():
             "usuario": "👥 Usuário Comum - Acesso padrão com modo otimizado",
             "admin": "👑 Administrador - Acesso completo com escolha de modo"
         }[x],
-        index=0,
+        index=1,
         help="Escolha seu tipo de acesso para ver o formulário apropriado."
     )
     
@@ -207,7 +207,7 @@ def tela_login_simples():
                     "cloud": "☁️ Cloud (Otimizado) - Recomendado",
                     "completo": "💻 Completo (Todos os dados)"
                 }[x],
-                index=0,
+                index=1,
                 help="Cloud: Dados otimizados, melhor performance\nCompleto: Acesso total, pode ser mais lento"
             )
             
@@ -423,7 +423,13 @@ def verificar_status_aprovado(username):
 
 def get_modo_operacao():
     """Retorna o modo de operação selecionado no login"""
-    return st.session_state.get('modo_operacao', 'cloud')
+    # Verificar se está rodando localmente (não no Streamlit Cloud)
+    import os
+    is_local = os.path.exists('KE5Z/KE5Z.parquet') and not os.environ.get('STREAMLIT_CLOUD')
+    
+    # Se estiver local e não houver modo definido, usar 'completo' por padrão
+    default_mode = 'completo' if is_local else 'cloud'
+    return st.session_state.get('modo_operacao', default_mode)
 
 def is_modo_cloud():
     """Retorna True se o modo selecionado for cloud (otimizado)"""

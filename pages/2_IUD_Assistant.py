@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import os
 import altair as alt
@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="IUD Assistant - Interactive User Dashboard",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Verificar autenticação
@@ -124,6 +124,14 @@ else:
 if is_cloud:
     st.sidebar.success("⚡ **Otimização Ativa**\n"
                       "Usando arquivos separados para melhor performance no Cloud!")
+
+# Função auxiliar para encontrar coluna de período (resolve problemas de encoding)
+def encontrar_coluna_periodo(df):
+    """Encontra a coluna de período mesmo com problemas de encoding"""
+    for col in df.columns:
+        if 'período' in col.lower() or 'periodo' in col.lower():
+            return col
+    return None
 
 # Carregar dados com tratamento robusto
 @st.cache_data(show_spinner=True, max_entries=3, ttl=3600, persist="disk")
@@ -259,12 +267,18 @@ if "Todos" in usina_selecionada or not usina_selecionada:
 else:
     df_filtrado = df_total[df_total['USI'].astype(str).isin(usina_selecionada)]
 
-# Filtro 2: Período (com tratamento de erro)
+# Filtro 2: Período (com tratamento de erro e correção de encoding)
 try:
-    periodo_opcoes = ["Todos"] + sorted(df_filtrado['Período'].dropna().astype(str).unique().tolist()) if 'Período' in df_filtrado.columns else ["Todos"]
-    periodo_selecionado = st.sidebar.selectbox("Selecione o Período:", periodo_opcoes)
-    if periodo_selecionado != "Todos":
-        df_filtrado = df_filtrado[df_filtrado['Período'].astype(str) == str(periodo_selecionado)]
+    coluna_periodo = encontrar_coluna_periodo(df_filtrado)
+    
+    if coluna_periodo is not None:
+        periodo_opcoes = ["Todos"] + sorted(df_filtrado[coluna_periodo].dropna().astype(str).unique().tolist())
+        periodo_selecionado = st.sidebar.selectbox("Selecione o Período:", periodo_opcoes)
+        if periodo_selecionado != "Todos":
+            df_filtrado = df_filtrado[df_filtrado[coluna_periodo].astype(str) == str(periodo_selecionado)]
+    else:
+        st.sidebar.warning("⚠️ Coluna 'Período' não encontrada nos dados")
+        periodo_selecionado = "Todos"
 except Exception as e:
     st.sidebar.error(f"Erro no filtro Período: {str(e)}")
     periodo_selecionado = "Todos"
@@ -493,11 +507,15 @@ class IUDAssistant:
     
     def _temporal_analysis(self, analysis):
         """Análise temporal"""
-        data = self.df.groupby('Período')['Valor'].sum().reset_index()
-        data = data.sort_values('Período')
+        coluna_periodo = encontrar_coluna_periodo(self.df)
+        if coluna_periodo is None:
+            return {'error': 'Coluna Período não encontrada'}
+            
+        data = self.df.groupby(coluna_periodo)['Valor'].sum().reset_index()
+        data = data.sort_values(coluna_periodo)
         
         chart = alt.Chart(data).mark_line(point=True, color='#3498db').encode(
-            x=alt.X('Período:O', title='Período'),
+            x=alt.X(f'{coluna_periodo}:O', title='Período'),
             y=alt.Y('Valor:Q', title='Valor (R$)'),
         ).properties(title="Evolução Temporal", width=600, height=400)
         
@@ -510,15 +528,19 @@ class IUDAssistant:
     
     def _waterfall_analysis(self, analysis):
         """Análise waterfall"""
-        data = self.df.groupby('Período')['Valor'].sum().reset_index()
-        data = data.sort_values('Período')
+        coluna_periodo = encontrar_coluna_periodo(self.df)
+        if coluna_periodo is None:
+            return {'error': 'Coluna Período não encontrada'}
+            
+        data = self.df.groupby(coluna_periodo)['Valor'].sum().reset_index()
+        data = data.sort_values(coluna_periodo)
         
         if len(data) >= 2:
             fig = go.Figure(go.Waterfall(
                 name="Waterfall",
                 orientation="v",
                 measure=["absolute"] + ["relative"] * (len(data) - 2) + ["absolute"],
-                x=data['Período'].tolist(),
+                x=data[coluna_periodo].tolist(),
                 y=data['Valor'].tolist(),
                 connector={"line": {"color": "rgb(63, 63, 63)"}},
                 increasing={"marker": {"color": "#e74c3c"}},  # Vermelho para aumentos
@@ -693,7 +715,12 @@ with tab2:
     connector_color = "rgba(255,255,255,0.35)" if theme_base == "dark" else "rgba(0,0,0,0.35)"
 
     # Meses disponíveis a partir de 'Período'
-    meses_disponiveis = sorted(df_filtrado['Período'].dropna().astype(str).unique().tolist())
+    coluna_periodo = encontrar_coluna_periodo(df_filtrado)
+    if coluna_periodo is not None:
+        meses_disponiveis = sorted(df_filtrado[coluna_periodo].dropna().astype(str).unique().tolist())
+    else:
+        st.error("❌ Coluna 'Período' não encontrada para análise waterfall")
+        st.stop()
     col_a, col_b, col_c = st.columns([1, 1, 1])
     with col_a:
         mes_inicial = st.selectbox("Mês inicial:", meses_disponiveis, index=0)
@@ -711,7 +738,7 @@ with tab2:
     def _norm_list(seq):
         return sorted([str(x).strip() for x in seq if str(x).strip() != ""])
     cats_all = _norm_list(df_filtrado[chosen_dim].dropna().unique().tolist())
-    vol_mf = (df_filtrado[df_filtrado['Período'].astype(str) == str(mes_final)]
+    vol_mf = (df_filtrado[df_filtrado[coluna_periodo].astype(str) == str(mes_final)]
               .groupby(chosen_dim)['Valor'].sum().sort_values(ascending=False))
     # Slider com máximo e padrão iguais ao total de categorias
     total_cats = max(1, len(cats_all))
@@ -735,15 +762,15 @@ with tab2:
         st.stop()
 
     # Totais de mês (todas as categorias)
-    total_m1_all = float(df_filtrado[df_filtrado['Período'].astype(str) == str(mes_inicial)]['Valor'].sum())
-    total_m2_all = float(df_filtrado[df_filtrado['Período'].astype(str) == str(mes_final)]['Valor'].sum())
+    total_m1_all = float(df_filtrado[df_filtrado[coluna_periodo].astype(str) == str(mes_inicial)]['Valor'].sum())
+    total_m2_all = float(df_filtrado[df_filtrado[coluna_periodo].astype(str) == str(mes_final)]['Valor'].sum())
     change_all = total_m2_all - total_m1_all
 
     # Filtrar pelas categorias escolhidas
     dff = df_filtrado[df_filtrado[chosen_dim].astype(str).isin(cats_sel)].copy()
-    g1 = (dff[dff['Período'].astype(str) == str(mes_inicial)]
+    g1 = (dff[dff[coluna_periodo].astype(str) == str(mes_inicial)]
           .groupby(chosen_dim)['Valor'].sum())
-    g2 = (dff[dff['Período'].astype(str) == str(mes_final)]
+    g2 = (dff[dff[coluna_periodo].astype(str) == str(mes_final)]
           .groupby(chosen_dim)['Valor'].sum())
 
     labels_cats, values_cats = [], []
