@@ -354,17 +354,24 @@ if df_CC is not None:
     print("Merge com CC concluído!")
 else:
     print("Pulando merge com CC - arquivo não encontrado.")
-# Substituir na coluna 'USI' os valores NaN por 'Others'
-df_total['USI'] = df_total['USI'].fillna('Others')
-# Exibir as 10 primeiras linhas do df_total e as colunas de Nº conta, Type 07, Type 06, Type 05, Centro cst, Oficina e USI
-print(
-    df_total[
-        [
-            'Nº conta', 'Type 07', 'Type 06', 'Type 05',
-            'Centro cst', 'Oficina', 'USI'
-        ]
-    ].head(10)
-)
+# Substituir na coluna 'USI' os valores NaN por 'Others' (se coluna existir)
+if 'USI' in df_total.columns:
+    df_total['USI'] = df_total['USI'].fillna('Others')
+else:
+    # Se não existe coluna USI, criar uma com valor padrão
+    df_total['USI'] = 'Others'
+    print("Coluna USI criada com valor padrão 'Others'")
+# Exibir as 10 primeiras linhas do df_total e as colunas disponíveis
+colunas_disponiveis = ['Nº conta', 'Centro cst', 'USI']
+colunas_opcionais = ['Type 07', 'Type 06', 'Type 05', 'Oficina']
+
+# Adicionar colunas opcionais se existirem
+for col in colunas_opcionais:
+    if col in df_total.columns:
+        colunas_disponiveis.append(col)
+
+print("Colunas disponíveis:", colunas_disponiveis)
+print(df_total[colunas_disponiveis].head(10))
 
 # Limpar e converter tipos de dados antes de salvar parquet
 print("Limpando e convertendo tipos de dados...")
@@ -475,9 +482,14 @@ if 'Nome do fornecedor' in df_total.columns and 'Fornecedor' in df_total.columns
 
 
 # Colocar as colunas Type 07, Type 06, Type 05 que forem vazias ou nulas como Others
-df_total['Type 07'] = df_total['Type 07'].fillna('Others')
-df_total['Type 06'] = df_total['Type 06'].fillna('Others')
-df_total['Type 05'] = df_total['Type 05'].fillna('Others')
+# Substituir nas colunas Type os valores NaN por 'Others' (se existirem)
+for col in ['Type 07', 'Type 06', 'Type 05']:
+    if col in df_total.columns:
+        df_total[col] = df_total[col].fillna('Others')
+    else:
+        # Se não existe coluna Type, criar uma com valor padrão
+        df_total[col] = 'Others'
+        print(f"Coluna {col} criada com valor padrão 'Others'")
 
 
 # # gerar um arquivo parquet do df_total atualizado
@@ -612,7 +624,11 @@ else:
 # Salvar arquivos Excel na pasta local do projeto
 
 # organizar a ordem das colunas em Período	Nºconta	Centrocst	doc.ref.	Dt.lçto.	Cen.lucro	 Valor 	QTD	Type 05	Type 06	Account	USI	Oficina	Doc.compra	Texto breve	Fornecedor	Material	DESCRIÇÃO SAPIENS	Usuário	Cofor	Tipo
-df_total = df_total[['Período', 'Nº conta', 'Centro cst', 'doc.ref', 'Dt.lçto.', 'Valor', 'Qtd.', 'Type 05', 'Type 06', 'Type 07', 'USI', 'Oficina', 'Doc.compra', 'Texto', 'Fornecedor', 'Material', 'Usuário', 'Fornec.', 'Tipo']]
+# Selecionar apenas as colunas que existem
+colunas_finais = ['Período', 'Nº conta', 'Centro cst', 'doc.ref', 'Dt.lçto.', 'Valor', 'Qtd.', 'Type 05', 'Type 06', 'Type 07', 'USI', 'Doc.compra', 'Texto', 'Material', 'Usuário', 'Fornec.', 'Tipo']
+colunas_existentes = [col for col in colunas_finais if col in df_total.columns]
+print(f"Colunas finais selecionadas: {colunas_existentes}")
+df_total = df_total[colunas_existentes]
 
 # mudar os nomes das colunas para Nºconta, Centrocst, Nºdoc.ref., QTD, Texto
 df_total.rename(columns={'Texto': 'Texto breve'}, inplace=True)
