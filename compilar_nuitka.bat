@@ -109,3 +109,8 @@ echo    2. Execute Dashboard_KE5Z.exe
 echo    3. O dashboard abrirá no navegador em http://localhost:8501
 echo.
 pause
+
+
+
+
+

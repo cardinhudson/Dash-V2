@@ -15,11 +15,21 @@ def get_usuarios_cloud():
     """Carrega usuários do sistema de secrets do Streamlit Cloud OU usuarios.json local"""
     import json
     import os
+    import sys
     
     try:
-        # PRIORIDADE 1: Tentar carregar do arquivo usuarios.json (local)
-        if os.path.exists('usuarios.json'):
-            with open('usuarios.json', 'r', encoding='utf-8') as f:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente
+            base_dir = os.getcwd()
+        
+        # PRIORIDADE 1: Tentar carregar do arquivo usuarios_padrao.json (dentro do executável)
+        usuarios_padrao_path = os.path.join(base_dir, 'usuarios_padrao.json')
+        if os.path.exists(usuarios_padrao_path):
+            with open(usuarios_padrao_path, 'r', encoding='utf-8') as f:
                 usuarios_json = json.load(f)
                 # Converter formato se necessário (adicionar tipo se não existir)
                 for usuario, dados in usuarios_json.items():
@@ -28,7 +38,19 @@ def get_usuarios_cloud():
                         dados['tipo'] = 'administrador' if usuario == 'admin' else 'usuario'
                 return usuarios_json
         
-        # PRIORIDADE 2: Tentar carregar do secrets.toml (Streamlit Cloud)
+        # PRIORIDADE 2: Tentar carregar do arquivo usuarios.json (local)
+        usuarios_json_path = os.path.join(base_dir, 'usuarios.json')
+        if os.path.exists(usuarios_json_path):
+            with open(usuarios_json_path, 'r', encoding='utf-8') as f:
+                usuarios_json = json.load(f)
+                # Converter formato se necessário (adicionar tipo se não existir)
+                for usuario, dados in usuarios_json.items():
+                    if 'tipo' not in dados:
+                        # Se não tem tipo, admin é administrador, outros são usuários
+                        dados['tipo'] = 'administrador' if usuario == 'admin' else 'usuario'
+                return usuarios_json
+        
+        # PRIORIDADE 3: Tentar carregar do secrets.toml (Streamlit Cloud)
         elif hasattr(st, 'secrets') and 'usuarios' in st.secrets:
             return dict(st.secrets.usuarios)
         
@@ -315,11 +337,22 @@ def salvar_usuario_json(nome_usuario, senha, tipo='usuario'):
     """Salva usuário no arquivo usuarios.json para persistência"""
     import json
     import os
+    import sys
     
     try:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente
+            base_dir = os.getcwd()
+        
+        usuarios_json_path = os.path.join(base_dir, 'usuarios.json')
+        
         # Carregar usuários existentes
-        if os.path.exists('usuarios.json'):
-            with open('usuarios.json', 'r', encoding='utf-8') as f:
+        if os.path.exists(usuarios_json_path):
+            with open(usuarios_json_path, 'r', encoding='utf-8') as f:
                 usuarios = json.load(f)
         else:
             usuarios = {}
@@ -345,7 +378,7 @@ def salvar_usuario_json(nome_usuario, senha, tipo='usuario'):
         }
         
         # Salvar arquivo
-        with open('usuarios.json', 'w', encoding='utf-8') as f:
+        with open(usuarios_json_path, 'w', encoding='utf-8') as f:
             json.dump(usuarios, f, indent=2, ensure_ascii=False)
         
         return True, f"✅ Usuário '{nome_usuario}' criado com sucesso!"
@@ -357,10 +390,20 @@ def listar_usuarios_json():
     """Lista todos os usuários do arquivo usuarios.json"""
     import json
     import os
+    import sys
     
     try:
-        if os.path.exists('usuarios.json'):
-            with open('usuarios.json', 'r', encoding='utf-8') as f:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente
+            base_dir = os.getcwd()
+        
+        usuarios_json_path = os.path.join(base_dir, 'usuarios.json')
+        if os.path.exists(usuarios_json_path):
+            with open(usuarios_json_path, 'r', encoding='utf-8') as f:
                 usuarios = json.load(f)
             return usuarios
         return {}
@@ -371,14 +414,25 @@ def excluir_usuario_json(nome_usuario):
     """Exclui usuário do arquivo usuarios.json"""
     import json
     import os
+    import sys
     
     try:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente
+            base_dir = os.getcwd()
+        
+        usuarios_json_path = os.path.join(base_dir, 'usuarios.json')
+        
         # Verificar se arquivo existe
-        if not os.path.exists('usuarios.json'):
+        if not os.path.exists(usuarios_json_path):
             return False, "❌ Arquivo de usuários não encontrado!"
         
         # Carregar usuários existentes
-        with open('usuarios.json', 'r', encoding='utf-8') as f:
+        with open(usuarios_json_path, 'r', encoding='utf-8') as f:
             usuarios = json.load(f)
         
         # Verificar se usuário existe
@@ -393,7 +447,7 @@ def excluir_usuario_json(nome_usuario):
         del usuarios[nome_usuario]
         
         # Salvar arquivo atualizado
-        with open('usuarios.json', 'w', encoding='utf-8') as f:
+        with open(usuarios_json_path, 'w', encoding='utf-8') as f:
             json.dump(usuarios, f, indent=2, ensure_ascii=False)
         
         return True, f"✅ Usuário '{nome_usuario}' excluído com sucesso!"

@@ -1,0 +1,74 @@
+===============================================
+    DASHBOARD KE5Z - INSTRUÇÕES COMPLETAS
+===============================================
+
+🐍 SOBRE O PYTHON:
+- O executável contém Python 3.13 COMPLETO embarcado (234MB)
+- NÃO precisa instalar Python no PC de destino
+- Funciona em QUALQUER Windows 11 sem dependências
+
+===============================================
+
+🚀 COMO EXECUTAR:
+
+MÉTODO 1 - Duplo clique (MAIS FÁCIL):
+1. Vá para a pasta "dist\Dashboard_KE5Z"
+2. Clique duas vezes em "Dashboard_KE5Z.exe"
+3. Aguarde abrir como aplicação desktop
+
+MÉTODO 2 - Arquivo .bat:
+1. Clique duas vezes em "EXECUTAR_DASHBOARD.bat"
+2. Siga as instruções na tela
+
+MÉTODO 3 - Linha de comando:
+1. Abra CMD ou PowerShell
+2. Navegue até esta pasta
+3. Execute: dist\Dashboard_KE5Z.exe
+
+===============================================
+
+⚠️  SOLUÇÃO DE PROBLEMAS:
+
+1. Se o Windows Defender bloquear:
+   - Clique em "Mais informações"
+   - Clique em "Executar mesmo assim"
+   - Ou adicione exceção no Windows Defender
+
+2. Se não abrir automaticamente:
+   - Aguarde 10-15 segundos
+   - Abra manualmente: http://localhost:8501
+   - Verifique se a porta 8501 não está ocupada
+
+3. Se der erro de permissão:
+   - Clique com botão direito no arquivo
+   - Selecione "Executar como administrador"
+
+4. Se não funcionar no PowerShell:
+   - Use CMD (Prompt de Comando) em vez de PowerShell
+   - Ou execute: cmd /c "dist\Dashboard_KE5Z.exe"
+
+===============================================
+
+🔑 CREDENCIAIS:
+- Administrador: admin / admin123
+- Usuário: user / user123
+
+===============================================
+
+📦 DISTRIBUIÇÃO:
+- Copie TODA a pasta "1 - APP" para o PC de destino
+- Mantenha a estrutura de pastas intacta
+- Execute de qualquer lugar dentro da pasta
+
+===============================================
+
+✅ GARANTIAS:
+- Funciona sem Python instalado
+- Funciona sem dependências externas
+- Funciona offline (após primeira execução)
+- Compatível com Windows 11
+
+Versão: 2.0 - Python 3.13 Embarcado
+Tamanho: 234MB (inclui Python completo)
+Data: 2025-10-06
+===============================================

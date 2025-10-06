@@ -183,3 +183,8 @@ echo    ✅ Atualizações simples
 echo    ✅ Compatível com Windows 10/11
 echo.
 pause
+
+
+
+
+

@@ -84,3 +84,8 @@ echo 🎯 O executável pode ser executado em qualquer PC Windows 11
 echo    sem necessidade de instalar Python ou dependências!
 echo.
 pause
+
+
+
+
+

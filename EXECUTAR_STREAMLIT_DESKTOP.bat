@@ -56,3 +56,5 @@ streamlit-desktop run dashboard_main.py
 echo.
 echo Dashboard finalizado!
 pause
+
+

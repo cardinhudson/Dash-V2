@@ -90,3 +90,8 @@ echo    ✅ Melhor performance
 echo    ✅ Funciona offline
 echo.
 pause
+
+
+
+
+

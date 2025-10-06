@@ -731,3 +731,5 @@ if is_cloud:
     st.success("☁️ Executando no Streamlit Cloud com otimizações")
 else:
     st.success("💻 Executando localmente com otimizações")
+
+

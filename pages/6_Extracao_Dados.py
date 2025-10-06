@@ -122,12 +122,31 @@ def adicionar_log(mensagem, detalhes=None, sem_timestamp=False):
         st.session_state.logs = st.session_state.logs[-200:]
 
 
+def resolver_pasta_extracoes() -> str:
+    """Resolve o nome da pasta 'Extrações' tolerando variações de acentuação.
+
+    Retorna o nome de diretório existente a ser usado nas verificações/cópias.
+    Ordem de prioridade: 'Extrações', 'Extracoes', 'ExtraÃ§Ãµes', fallback 'Extracoes'.
+    """
+    candidatos = [
+        'Extrações',  # nome correto com acento
+        'Extracoes',  # sem acento
+        'ExtraÃ§Ãµes', # nome corrompido
+    ]
+    for nome in candidatos:
+        caminho = os.path.join(os.getcwd(), nome)
+        if os.path.isdir(caminho):
+            return nome
+    # fallback padrão (usaremos sem acento para nova criação/cópia)
+    return 'Extracoes'
+
 def verificar_arquivos_necessarios():
     """Verifica se todos os arquivos necessários existem"""
+    base_extracoes = resolver_pasta_extracoes()
     arquivos_necessarios = [
         ("Extração.py", "Script principal"),
-        ("Extrações/KE5Z", "Pasta com arquivos .txt KE5Z"),
-        ("Extrações/KSBB", "Pasta com arquivos .txt KSBB"),
+        (os.path.join(base_extracoes, "KE5Z"), "Pasta com arquivos .txt KE5Z"),
+        (os.path.join(base_extracoes, "KSBB"), "Pasta com arquivos .txt KSBB"),
         ("Dados SAPIENS.xlsx", "Base de dados SAPIENS"),
         ("Fornecedores.xlsx", "Lista de fornecedores")
     ]

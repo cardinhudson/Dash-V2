@@ -122,14 +122,49 @@ def adicionar_log(mensagem, detalhes=None, sem_timestamp=False):
         st.session_state.logs = st.session_state.logs[-200:]
 
 
+def resolver_pasta_extracoes() -> str:
+    """Resolve o nome da pasta 'Extrações' tolerando variações de acentuação.
+
+    Retorna o nome de diretório existente a ser usado nas verificações/cópias.
+    Ordem de prioridade: 'Extrações', 'Extracoes', 'ExtraÃ§Ãµes', fallback 'Extracoes'.
+    """
+    # Obter diretório base (onde está o executável)
+    if hasattr(sys, '_MEIPASS'):
+        # Executando dentro do PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Executando normalmente - usar diretório do script atual
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    candidatos = [
+        'Extrações',  # nome correto com acento
+        'Extracoes',  # sem acento
+        'ExtraÃ§Ãµes', # nome corrompido
+    ]
+    for nome in candidatos:
+        caminho = os.path.join(base_dir, nome)
+        if os.path.isdir(caminho):
+            return nome
+    # fallback padrão (usaremos sem acento para nova criação/cópia)
+    return 'Extracoes'
+
 def verificar_arquivos_necessarios():
     """Verifica se todos os arquivos necessários existem"""
+    # Obter diretório base (onde está o executável)
+    if hasattr(sys, '_MEIPASS'):
+        # Executando dentro do PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Executando normalmente - usar diretório do script atual
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    base_extracoes = resolver_pasta_extracoes()
     arquivos_necessarios = [
-        ("Extração.py", "Script principal"),
-        ("Extrações/KE5Z", "Pasta com arquivos .txt KE5Z"),
-        ("Extrações/KSBB", "Pasta com arquivos .txt KSBB"),
-        ("Dados SAPIENS.xlsx", "Base de dados SAPIENS"),
-        ("Fornecedores.xlsx", "Lista de fornecedores")
+        (os.path.join(base_dir, "Extracao.py"), "Script principal"),
+        (os.path.join(base_dir, base_extracoes, "KE5Z"), "Pasta com arquivos .txt KE5Z"),
+        (os.path.join(base_dir, base_extracoes, "KSBB"), "Pasta com arquivos .txt KSBB"),
+        (os.path.join(base_dir, "Dados SAPIENS.xlsx"), "Base de dados SAPIENS"),
+        (os.path.join(base_dir, "Fornecedores.xlsx"), "Lista de fornecedores")
     ]
     
     resultados = []
@@ -156,21 +191,38 @@ def verificar_arquivos_necessarios():
 def executar_extracao(meses_filtro=None, progress_callback=None):
     """Executa o script Extração.py com captura de logs em tempo real"""
     try:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente - usar diretório do script atual
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
         adicionar_log("🚀 Iniciando execução do Extração.py...")
         if progress_callback:
             progress_callback(10, "🚀 Iniciando execução...", "Preparando ambiente")
 
-        python_path = sys.executable
+        # Determinar o caminho correto do Python
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller - usar python.exe do sistema
+            python_path = "python"
+        else:
+            # Executando normalmente
+            python_path = sys.executable
+            
+        script_path = os.path.join(base_dir, "Extracao.py")
         adicionar_log(f"🐍 Usando Python: {python_path}")
+        adicionar_log(f"📄 Script: {script_path}")
         if progress_callback:
             progress_callback(15, "⚙️ Iniciando subprocess...", "Executando script")
 
         processo = subprocess.Popen(
-            [python_path, "-u", "Extração.py"],
+            [python_path, "-u", script_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            cwd=os.getcwd(),
+            cwd=base_dir,
             encoding='cp1252',
             errors='replace',
             bufsize=1,
@@ -225,13 +277,22 @@ def executar_extracao(meses_filtro=None, progress_callback=None):
 
 def verificar_arquivos_gerados():
     """Verifica quais arquivos foram gerados pela extração"""
+    # Obter diretório base (onde está o executável)
+    if hasattr(sys, '_MEIPASS'):
+        # Executando dentro do PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Executando normalmente
+        base_dir = os.getcwd()
+    
     arquivos_gerados = []
     
     adicionar_log("🔍 Verificando arquivos gerados pela extração")
     
     # Verificar arquivos Parquet
-    if os.path.exists("KE5Z"):
-        arquivos_parquet = glob.glob("KE5Z/*.parquet")
+    ke5z_path = os.path.join(base_dir, "KE5Z")
+    if os.path.exists(ke5z_path):
+        arquivos_parquet = glob.glob(os.path.join(ke5z_path, "*.parquet"))
         adicionar_log(f"📁 Pasta KE5Z encontrada", 
                       f"Arquivos .parquet: {len(arquivos_parquet)}")
         
@@ -248,8 +309,9 @@ def verificar_arquivos_gerados():
         adicionar_log("⚠️ Pasta KE5Z não encontrada")
     
     # Verificar arquivos Excel
-    if os.path.exists("arquivos"):
-        arquivos_excel = glob.glob("arquivos/*.xlsx")
+    arquivos_path = os.path.join(base_dir, "arquivos")
+    if os.path.exists(arquivos_path):
+        arquivos_excel = glob.glob(os.path.join(arquivos_path, "*.xlsx"))
         adicionar_log(f"📁 Pasta arquivos encontrada", 
                       f"Arquivos .xlsx: {len(arquivos_excel)}")
         
@@ -272,12 +334,23 @@ def verificar_arquivos_gerados():
 def aplicar_filtro_mes_excel(meses_filtro):
     """Aplica filtro de mês nos arquivos Excel específicos"""
     try:
+        # Obter diretório base (onde está o executável)
+        if hasattr(sys, '_MEIPASS'):
+            # Executando dentro do PyInstaller
+            base_dir = sys._MEIPASS
+        else:
+            # Executando normalmente
+            base_dir = os.getcwd()
+        
         if not meses_filtro or len(meses_filtro) == 12:
             adicionar_log("📅 Todos os meses selecionados - sem filtro aplicado", 
                           f"Meses: {meses_filtro}")
             return True
         
-        arquivos_excel = ["arquivos/KE5Z_veiculos.xlsx", "arquivos/KE5Z_pwt.xlsx"]
+        arquivos_excel = [
+            os.path.join(base_dir, "arquivos", "KE5Z_veiculos.xlsx"), 
+            os.path.join(base_dir, "arquivos", "KE5Z_pwt.xlsx")
+        ]
         adicionar_log("🔍 Iniciando aplicação de filtro de mês", 
                       f"Arquivos: {len(arquivos_excel)}, Meses: {meses_filtro}")
         

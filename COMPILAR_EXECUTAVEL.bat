@@ -30,3 +30,8 @@ echo.
 echo 🎉 Processo de compilação finalizado!
 echo.
 pause
+
+
+
+
+

@@ -285,3 +285,8 @@ echo.
 echo 🎉 Pacote pronto para distribuição!
 echo.
 pause
+
+
+
+
+

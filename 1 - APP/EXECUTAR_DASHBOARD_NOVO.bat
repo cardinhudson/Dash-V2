@@ -8,21 +8,21 @@ echo ===============================================
 echo.
 
 if exist "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe" (
-    echo ✅ Executável encontrado!
-    echo 🚀 Iniciando Dashboard...
+    echo Executavel encontrado!
+    echo Iniciando Dashboard...
     echo.
-    echo ⚠️  IMPORTANTE: Mantenha esta janela aberta!
-    echo 🌐 O dashboard abrirá como aplicação desktop
+    echo IMPORTANTE: Mantenha esta janela aberta!
+    echo O dashboard abrira como aplicacao desktop
     echo.
     "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe"
 ) else (
-    echo ❌ Executável não encontrado!
-    echo 📁 Verificando pasta dist...
+    echo Executavel nao encontrado!
+    echo Verificando pasta dist...
     if exist "dist" (
-        echo 📄 Arquivos na pasta dist:
+        echo Arquivos na pasta dist:
         dir /b "dist"
     ) else (
-        echo ❌ Pasta dist não existe!
+        echo Pasta dist nao existe!
     )
 )
 
