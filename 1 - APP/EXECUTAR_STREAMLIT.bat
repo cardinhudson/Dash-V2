@@ -29,11 +29,17 @@ echo.
 echo NOTA: Esta versao usa a interface nativa do Streamlit
 echo (nao abre automaticamente no navegador)
 echo.
+echo Para acessar o Dashboard, abra seu navegador e acesse:
+echo http://localhost:8502
+echo.
+echo Pressione qualquer tecla para abrir o navegador automaticamente...
+pause >nul
+start "" "http://localhost:8502"
 
 REM Copiar configuracao headless
 copy ".streamlit\config_headless.toml" ".streamlit\config.toml" >nul 2>&1
 
-"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501
+"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8502
 
 echo.
 echo Dashboard finalizado!
