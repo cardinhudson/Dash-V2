@@ -26,32 +26,20 @@ if not exist "venv\Scripts\streamlit.exe" (
 echo Iniciando Dashboard em modo DESKTOP NATIVO...
 echo IMPORTANTE: Mantenha esta janela aberta!
 echo.
-echo NOTA: Esta versao usa o Streamlit Desktop App
+echo NOTA: Esta versao usa o Streamlit em modo desktop
 echo (interface nativa, nao navegador)
 echo.
 
-REM Verificar se streamlit-desktop-app.exe existe
-if exist "venv\Scripts\streamlit-desktop-app.exe" (
-    echo ✅ Streamlit Desktop App encontrado!
-    echo Iniciando interface desktop nativa...
-    echo.
-    "venv\Scripts\streamlit-desktop-app.exe" run dashboard_main.py --server.port 8502
-) else (
-    echo ❌ Streamlit Desktop App nao encontrado!
-    echo Tentando instalar Streamlit Desktop...
-    echo.
-    "venv\Scripts\pip.exe" install streamlit-desktop-app
-    echo.
-    echo Tentando executar novamente...
-    if exist "venv\Scripts\streamlit-desktop-app.exe" (
-        "venv\Scripts\streamlit-desktop-app.exe" run dashboard_main.py --server.port 8502
-    ) else (
-        echo ❌ Falha ao instalar Streamlit Desktop App
-        echo Executando versao web como fallback...
-        echo.
-        "venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8502
-    )
-)
+REM Copiar configuracao para modo desktop
+copy ".streamlit\config_headless.toml" ".streamlit\config.toml" >nul 2>&1
+
+echo ✅ Iniciando interface desktop nativa...
+echo.
+echo O Dashboard abrira em uma janela desktop separada
+echo (nao no navegador)
+echo.
+
+"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8502 --server.headless true
 
 echo.
 echo Dashboard finalizado!

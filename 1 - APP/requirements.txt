@@ -26,6 +26,3 @@ pathlib2>=2.3.0
 # Dependências para o instalador (opcionais)
 winshell>=0.6; sys_platform == "win32"
 pywin32>=306; sys_platform == "win32"
-
-# Streamlit Desktop App para interface nativa
-streamlit-desktop-app>=0.1.0

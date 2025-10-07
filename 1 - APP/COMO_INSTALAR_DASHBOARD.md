@@ -56,7 +56,7 @@ Após a instalação, você pode executar o Dashboard de várias formas:
 
 ### Opção 2: Dashboard Interface Desktop Nativa
 - Clique duas vezes em `EXECUTAR_STREAMLIT.bat`
-- Usa o Streamlit Desktop App (interface nativa, não navegador)
+- Usa o Streamlit em modo desktop (interface nativa, não navegador)
 
 ### Opção 3: Atalho na Área de Trabalho
 - Use o atalho **"Dashboard KE5Z"** criado automaticamente na área de trabalho
