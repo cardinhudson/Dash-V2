@@ -1,11 +1,11 @@
 @echo off
 chcp 65001 >nul 2>&1
-title Dashboard KE5Z
+cd /d "%~dp0"
+
 echo ===============================================
 echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
 echo ===============================================
 echo.
-cd /d "%~dp0"
 
 REM Verificar se o ambiente virtual existe
 if exist "venv\Scripts\streamlit.exe" (

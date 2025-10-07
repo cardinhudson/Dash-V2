@@ -140,11 +140,41 @@ class DashboardInstaller:
             # Script para Windows
             if platform.system() == "Windows":
                 launcher_content = f'''@echo off
+chcp 65001 >nul 2>&1
 title Dashboard KE5Z
-echo Iniciando Dashboard KE5Z...
+echo ===============================================
+echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo ===============================================
 echo.
 cd /d "{self.project_dir}"
-"{self.python_exe}" dashboard_main.py
+
+REM Verificar se o ambiente virtual existe
+if exist "venv_dashboard\\Scripts\\streamlit.exe" (
+    echo Ambiente virtual encontrado!
+    echo Iniciando Dashboard via Streamlit...
+    echo.
+    echo IMPORTANTE: Mantenha esta janela aberta!
+    echo O dashboard abrira no seu navegador
+    echo.
+    "venv_dashboard\\Scripts\\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
+) else (
+    echo Ambiente virtual nao encontrado!
+    echo Verificando se existe venv_dashboard...
+    if exist "venv_dashboard" (
+        echo Pasta venv_dashboard existe mas streamlit.exe nao encontrado
+        echo Tentando executar com python...
+        if exist "venv_dashboard\\Scripts\\python.exe" (
+            "venv_dashboard\\Scripts\\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+        ) else (
+            echo Python nao encontrado no ambiente virtual!
+        )
+    ) else (
+        echo Pasta venv_dashboard nao existe!
+        echo Execute primeiro o INSTALAR_DASHBOARD.bat
+    )
+)
+
+echo.
 pause
 '''
                 launcher_file = self.project_dir / "EXECUTAR_DASHBOARD.bat"
@@ -153,11 +183,29 @@ pause
                 
                 # Script alternativo
                 launcher_content2 = f'''@echo off
+chcp 65001 >nul 2>&1
 title Dashboard KE5Z - Streamlit
-echo Iniciando Dashboard KE5Z via Streamlit...
+echo ===============================================
+echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo ===============================================
 echo.
 cd /d "{self.project_dir}"
-"{self.python_exe}" -m streamlit run dashboard_main.py
+
+REM Verificar se o ambiente virtual existe
+if exist "venv_dashboard\\Scripts\\python.exe" (
+    echo Ambiente virtual encontrado!
+    echo Iniciando Dashboard via Streamlit (Python module)...
+    echo.
+    echo IMPORTANTE: Mantenha esta janela aberta!
+    echo O dashboard abrira no seu navegador
+    echo.
+    "venv_dashboard\\Scripts\\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+) else (
+    echo Ambiente virtual nao encontrado!
+    echo Execute primeiro o INSTALAR_DASHBOARD.bat
+)
+
+echo.
 pause
 '''
                 launcher_file2 = self.project_dir / "EXECUTAR_STREAMLIT.bat"
