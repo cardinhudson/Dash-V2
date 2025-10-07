@@ -68,9 +68,9 @@ Extra��es/
 Dashboard_KE5Z_FINAL_DESKTOP/KE5Z/ 
  
 # Credenciais/usuarios locais 
-usuarios.json 
-usuarios_*.json 
- 
+# usuarios.json - REMOVIDO (agora incluído no projeto)
+# usuarios_*.json - REMOVIDO (agora incluído no projeto)
+
 # Ambientes python criados por instaladores 
 Scripts/ 
-pyvenv.cfg
+# pyvenv.cfg - REMOVIDO (agora incluído no projeto)
