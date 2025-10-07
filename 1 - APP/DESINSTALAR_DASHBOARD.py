@@ -76,17 +76,22 @@ class DashboardUninstaller:
                 
                 if os.path.exists(shortcut_path):
                     os.remove(shortcut_path)
-                    print("✅ Atalho da área de trabalho removido!")
+                    print("✅ Atalho 'Dashboard KE5Z' removido da área de trabalho!")
+                    print(f"   📍 Localização removida: {shortcut_path}")
                 else:
                     print("ℹ️ Atalho da área de trabalho não encontrado.")
+            else:
+                print("ℹ️ Sistema não é Windows - nenhum atalho para remover.")
             
             return True
             
         except ImportError:
             print("ℹ️ Módulo para remoção de atalhos não disponível.")
+            print("   O atalho pode precisar ser removido manualmente.")
             return True
         except Exception as e:
             print(f"⚠️ Aviso: Não foi possível remover atalhos: {e}")
+            print("   O atalho pode precisar ser removido manualmente.")
             return True
     
     def remove_temp_files(self):

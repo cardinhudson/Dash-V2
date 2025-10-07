@@ -223,6 +223,7 @@ pause
     def create_desktop_shortcut(self):
         """Cria atalho na área de trabalho (Windows)"""
         if platform.system() != "Windows":
+            print("ℹ️ Sistema não é Windows - atalho não será criado")
             return True
             
         print("🔗 Criando atalho na área de trabalho...")
@@ -234,6 +235,11 @@ pause
             desktop = winshell.desktop()
             shortcut_path = os.path.join(desktop, "Dashboard KE5Z.lnk")
             
+            # Verificar se já existe um atalho
+            if os.path.exists(shortcut_path):
+                print("ℹ️ Atalho já existe, substituindo...")
+                os.remove(shortcut_path)
+            
             target = str(self.project_dir / "EXECUTAR_DASHBOARD.bat")
             wDir = str(self.project_dir)
             
@@ -242,16 +248,22 @@ pause
             shortcut.Targetpath = target
             shortcut.WorkingDirectory = wDir
             shortcut.IconLocation = target
+            shortcut.Description = "Executar Dashboard KE5Z"
             shortcut.save()
             
-            print("✅ Atalho criado na área de trabalho!")
+            print("✅ Atalho 'Dashboard KE5Z' criado na área de trabalho!")
+            print(f"   📍 Localização: {shortcut_path}")
+            print(f"   🎯 Destino: {target}")
             return True
             
-        except ImportError:
-            print("⚠️ Aviso: Não foi possível criar atalho (dependências não disponíveis)")
+        except ImportError as e:
+            print("⚠️ Aviso: Dependências para criar atalho não disponíveis")
+            print(f"   Detalhes: {e}")
+            print("   O Dashboard funcionará normalmente, apenas sem atalho na área de trabalho")
             return True
         except Exception as e:
             print(f"⚠️ Aviso: Não foi possível criar atalho: {e}")
+            print("   O Dashboard funcionará normalmente, apenas sem atalho na área de trabalho")
             return True
     
     def verify_installation(self):
