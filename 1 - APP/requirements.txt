@@ -22,3 +22,7 @@ memory-profiler>=0.60.0
 
 # Dependências para manipulação de arquivos
 pathlib2>=2.3.0
+
+# Dependências para o instalador (opcionais)
+winshell>=0.6; sys_platform == "win32"
+pywin32>=306; sys_platform == "win32"
