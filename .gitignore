@@ -31,7 +31,7 @@ dist/
 *.egg-info/
 
 # Executáveis e aplicações compiladas
-*.exe
+# *.exe - REMOVIDO (executável pode ser necessário para instalação)
 *.app
 *.dmg
 *.msi
