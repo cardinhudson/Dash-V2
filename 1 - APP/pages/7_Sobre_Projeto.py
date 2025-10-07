@@ -75,7 +75,7 @@ verificar_autenticacao()
 
 # Navegação simples
 st.sidebar.markdown("📋 **NAVEGAÇÃO:** Use abas do navegador")
-st.sidebar.markdown("🏠 Dashboard: `http://localhost:8690`")
+st.sidebar.markdown("🏠 Dashboard: Aplicação Desktop")
 st.sidebar.markdown("---")
 
 # Header
@@ -87,7 +87,7 @@ st.markdown("""
     <h1 style="color: white; font-size: 3rem; margin: 0;">🎯 Dashboard KE5Z</h1>
     <h3 style="color: #f0f0f0; margin: 0;">Sistema Avançado de Análise Financeira</h3>
     <p style="color: #e0e0e0; font-size: 1.2rem; margin-top: 1rem;">
-        Plataforma completa para análise de dados SAP com otimizações avançadas de performance
+        Aplicação Desktop completa para análise de dados SAP com extração automática e otimizações avançadas
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -96,10 +96,10 @@ st.markdown("""
 st.markdown("""
 <div style="text-align: center; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px; margin: 1rem 0;">
     <h4 style="color: #333; margin: 0; font-weight: 600;">
-        Sistema completo de análise financeira com otimizações avançadas
+        Aplicação Desktop completa com extração automática de dados
     </h4>
     <p style="color: #666; margin: 0.5rem 0; font-size: 1.1rem;">
-        Desenvolvido com foco em performance, usabilidade e escalabilidade
+        Desenvolvido como executável independente para máxima portabilidade e performance
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -118,7 +118,7 @@ with col3:
     st.metric("📊 Páginas", "7", "Funcionalidades completas")
 
 with col4:
-    st.metric("🎯 Filtros", "15+", "Análise avançada")
+    st.metric("🖥️ Aplicação", "Desktop", "Executável independente")
 
 # Objetivos do Projeto - Movidos para o início
 st.markdown("---")
@@ -130,11 +130,13 @@ st.markdown("""
 - ⚡ Performance otimizada para grandes volumes
 - 🔐 Sistema de autenticação robusto
 - 📱 Interface responsiva e intuitiva
-- ☁️ Compatibilidade com Streamlit Cloud
+- 🖥️ **Aplicação Desktop independente:** Executável que funciona em qualquer PC Windows 11
+- 🔄 **Extração automática de dados:** Processamento inteligente de arquivos TXT para Parquet otimizado
 - 🎯 **Análise Type 07 avançada:** Filtros específicos por Type 05, Type 06 e Período com seleção dinâmica de Top N
 - 📊 **Tabelas inteligentes:** Filtragem automática para mostrar apenas valores diferentes de zero
 - 🔧 **Interface limpa:** Remoção de mensagens de debug para melhor experiência do usuário
 - 📦 **Transformação inteligente de dados:** Conversão automática de arquivos TXT muito grandes em arquivos Parquet otimizados, reduzindo drasticamente o tamanho dos arquivos (até 10x menor) e melhorando significativamente a performance de carregamento e processamento
+- 🚀 **Portabilidade total:** Aplicação completa em uma única pasta, sem necessidade de instalação de Python
 """)
 
 # Desafio Principal do Projeto
@@ -144,10 +146,10 @@ st.header("⚠️ Desafio Principal & Soluções")
 st.markdown("""
 <div style="padding: 1.5rem; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); border-radius: 10px; margin: 1rem 0; color: white;">
     <h4 style="color: white; margin: 0; font-weight: 600;">
-        📊 PROBLEMA CRÍTICO: Streamlit Cloud derrubando o site
+        📊 PROBLEMA CRÍTICO: Dados grandes causando instabilidade
     </h4>
     <p style="margin: 0.5rem 0; font-size: 1.1rem;">
-        Dados originais com 3+ milhões de registros causavam erro "Oh no." e crash do sistema
+        Dados originais com 3+ milhões de registros causavam problemas de performance e estabilidade
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -158,10 +160,10 @@ with col1:
     st.subheader("🔥 Problemas Identificados")
     st.markdown("""
     - **📁 Arquivo KE5Z.parquet:** 3+ milhões de linhas
-    - **💾 Uso de memória:** Excedia limites do Streamlit Cloud
-    - **❌ Erro "Oh no.":** Sistema derrubado constantemente
+    - **💾 Uso de memória:** Excedia limites de processamento
+    - **❌ Instabilidade:** Sistema lento e instável
     - **🐌 Downloads grandes:** Causavam timeouts e crashes
-    - **🔄 Instabilidade:** Experiência do usuário comprometida
+    - **🔄 Performance:** Experiência do usuário comprometida
     """)
 
 with col2:
@@ -169,13 +171,14 @@ with col2:
     st.markdown("""
     - **📊 Separação de dados:** main/others/waterfall
     - **⚡ Redução de 68%:** Arquivo waterfall otimizado
-    - **🛡️ Limites inteligentes:** 50K cloud, 1M+ local
-    - **🔍 Verificação preventiva:** Antes de downloads
+    - **🖥️ Aplicação Desktop:** Executável independente
+    - **🔄 Extração automática:** Processamento inteligente de dados
     - **💾 Cache otimizado:** TTL e persistência em disco
     - **🎯 Filtros consistentes:** Mesma fonte tabela/Excel
+    - **🚀 Portabilidade total:** Funciona em qualquer PC Windows 11
     """)
 
-st.info("🎆 **Resultado Final:** Sistema 100% estável no Streamlit Cloud com performance otimizada!")
+st.info("🎆 **Resultado Final:** Aplicação Desktop 100% estável com performance otimizada e portabilidade total!")
 
 # Seção da Equipe
 st.markdown("---")
@@ -542,23 +545,31 @@ with col1:
         st.markdown("""
         ### 🏗️ Estrutura de Arquivos
         ```
-        📦 Dashboard KE5Z/
-        ├── 🏠 Dash.py (Principal)
+        📦 1 - APP/ (Aplicação Desktop Completa)
+        ├── 🖥️ dist/Dashboard_KE5Z/Dashboard_KE5Z.exe (Executável)
+        ├── 🏠 dashboard_main.py (Principal)
         ├── 🔐 auth_simple.py (Autenticação)
-        ├── 🔄 Extração.py (Processamento)
-        ├── 📂 pages/
-        │   ├── 📅 Dash_Mes.py
-        │   ├── 📊 Total accounts.py
-        │   ├── 🌊 Waterfall_Analysis.py
-        │   ├── 🤖 IA_Unificada.py
-        │   ├── 📥 Extracao_Dados.py
-        │   └── 👑 Admin_Usuarios.py
-        ├── 📂 KE5Z/ (Dados)
+        ├── 🔄 Extracao.py (Processamento)
+        ├── 📂 pages/ (Páginas do Dashboard)
+        │   ├── 📅 1_Dash_Mes.py
+        │   ├── 📊 3_Total_accounts.py
+        │   ├── 🌊 4_Waterfall_Analysis.py
+        │   ├── 🤖 2_IUD_Assistant.py
+        │   ├── 📥 6_Extracao_Dados.py
+        │   ├── 👑 5_Admin_Usuarios.py
+        │   └── ℹ️ 7_Sobre_Projeto.py
+        ├── 📂 KE5Z/ (Dados Gerados)
         │   ├── KE5Z.parquet (Original)
         │   ├── KE5Z_main.parquet (Otimizado)
         │   ├── KE5Z_others.parquet (Separado)
         │   └── KE5Z_waterfall.parquet (68% menor)
-        └── 📂 logs/ (Histórico)
+        ├── 📂 Extracoes/ (Dados de Entrada)
+        │   ├── KE5Z/ (Arquivos .txt)
+        │   └── KSBB/ (Arquivos .txt)
+        ├── 📂 arquivos/ (Excel Específicos)
+        ├── 📄 Dados SAPIENS.xlsx
+        ├── 📄 Fornecedores.xlsx
+        └── 📄 usuarios_padrao.json
         ```
         
         ### 🔧 Tecnologias Utilizadas
@@ -571,24 +582,23 @@ with col1:
 
     with st.expander("⚙️ **SCRIPTS DE AUTOMAÇÃO**", expanded=False):
         st.markdown("""
-        ### 🚀 Scripts de Inicialização
+        ### 🚀 Aplicação Desktop
         
-        **📜 `abrir_dashboard_simples.bat`**
+        **🖥️ `Dashboard_KE5Z.exe`** (Executável Principal)
         ```batch
-        # Detecção automática de portas
-        # Verificação de dependências
-        # Instalação automática
-        # Abertura do navegador
-        streamlit run Dash.py --server.port 8555
+        # Aplicação desktop independente
+        # Não requer instalação de Python
+        # Funciona em qualquer PC Windows 11
+        # Interface web integrada
+        # Extração automática de dados
         ```
         
-        **📜 `abrir_dashboard.bat`** (Completo)
+        **📂 Estrutura Portátil**
         ```batch
-        # Criação de ambiente virtual
-        # Verificação completa do sistema
-        # Instalação de dependências
-        # Validação de arquivos
-        # Inicialização robusta
+        # Pasta "1 - APP" contém tudo
+        # Executável + Dados + Dependências
+        # Copiar pasta = Instalar aplicação
+        # Zero configuração necessária
         ```
         
         **📜 `Extração.py`** (Processamento)
@@ -644,6 +654,16 @@ with col2:
         - **Dados filtrados** ou completos
         - **Tratamento de limites** do Excel
         - **Nomes inteligentes** de arquivos
+        
+        ### 🔄 Extração Automática de Dados
+        - **Processamento inteligente** de arquivos TXT grandes
+        - **Conversão automática** para formato Parquet otimizado
+        - **Redução de tamanho** até 10x menor que arquivos originais
+        - **Performance superior** para carregamento e processamento
+        - **Merge automático** com dados SAPIENS e Fornecedores
+        - **Geração de 4 arquivos** otimizados (main, others, waterfall, completo)
+        - **Logs detalhados** de progresso e estatísticas
+        - **Tratamento robusto** de erros e validações
         """)
 
 st.markdown("---")
@@ -941,11 +961,11 @@ with col3:
 st.markdown("---")
 st.subheader("💻 Código-Fonte Principal")
 
-with st.expander("🔧 **EXTRAÇÃO.PY** - Engine de Processamento de Dados", expanded=False):
+with st.expander("🔧 **EXTRACAO.PY** - Engine de Processamento de Dados", expanded=False):
     st.markdown("### 📊 Responsável por processar 3+ milhões de registros e gerar 4 arquivos otimizados")
     
     try:
-        with open('Extração.py', 'r', encoding='utf-8') as f:
+        with open('Extracao.py', 'r', encoding='utf-8') as f:
             codigo_extracao = f.read()
         
         # Mostrar estatísticas do arquivo
@@ -973,13 +993,13 @@ with st.expander("🔧 **EXTRAÇÃO.PY** - Engine de Processamento de Dados", ex
         st.code(codigo_extracao, language='python')
         
     except Exception as e:
-        st.error(f"❌ Erro ao carregar Extração.py: {e}")
+        st.error(f"❌ Erro ao carregar Extracao.py: {e}")
 
-with st.expander("🏠 **DASH.PY** - Dashboard Principal Interativo", expanded=False):
+with st.expander("🏠 **DASHBOARD_MAIN.PY** - Dashboard Principal Interativo", expanded=False):
     st.markdown("### 📊 Interface principal com sistema completo de análise e visualização")
     
     try:
-        with open('Dash.py', 'r', encoding='utf-8') as f:
+        with open('dashboard_main.py', 'r', encoding='utf-8') as f:
             codigo_dash = f.read()
         
         # Mostrar estatísticas do arquivo
@@ -1009,7 +1029,7 @@ with st.expander("🏠 **DASH.PY** - Dashboard Principal Interativo", expanded=F
         st.code(codigo_dash, language='python')
         
     except Exception as e:
-        st.error(f"❌ Erro ao carregar Dash.py: {e}")
+        st.error(f"❌ Erro ao carregar dashboard_main.py: {e}")
 
 with st.expander("🔐 **AUTH_SIMPLE.PY** - Sistema de Autenticação", expanded=False):
     st.markdown("### 🛡️ Sistema completo de autenticação com administração de usuários")
@@ -1055,13 +1075,13 @@ st.markdown("""
 <div style="text-align: center; padding: 2rem; background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); border-radius: 10px; margin-top: 2rem;">
     <h3 style="color: white; margin: 0;">🎯 Dashboard KE5Z</h3>
     <p style="color: #f0f0f0; margin: 0.5rem 0;">
-        Sistema completo de análise financeira com otimizações avançadas
+        Aplicação Desktop completa de análise financeira com extração automática
     </p>
     <p style="color: #e0e0e0; font-size: 0.9rem; margin: 0;">
-        Desenvolvido com foco em performance, usabilidade e escalabilidade
+        Desenvolvido como executável independente para máxima portabilidade
     </p>
     <p style="color: #d0d0d0; font-size: 0.8rem; margin-top: 1rem;">
-        💻 3.500+ linhas de código • ⚡ 68% otimização • 🔐 Sistema seguro • 📊 7 páginas completas • 🎯 15+ filtros avançados
+        💻 3.500+ linhas de código • ⚡ 68% otimização • 🖥️ Aplicação Desktop • 🔄 Extração automática • 📊 7 páginas completas • 🎯 15+ filtros avançados
     </p>
 </div>
 """, unsafe_allow_html=True)
