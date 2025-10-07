@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 >nul 2>&1
-title Dashboard KE5Z
+title Dashboard KE5Z - Navegador
 echo ===============================================
-echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo    DASHBOARD KE5Z - EXECUTANDO NO NAVEGADOR
 echo ===============================================
 echo.
 cd /d "%~dp0"

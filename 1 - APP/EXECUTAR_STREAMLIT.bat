@@ -1,7 +1,7 @@
 @echo off
-title Dashboard KE5Z - Streamlit
+title Dashboard KE5Z - Streamlit (Interface Nativa)
 echo ===============================================
-echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo    DASHBOARD KE5Z - INTERFACE NATIVA STREAMLIT
 echo ===============================================
 echo.
 
@@ -23,11 +23,14 @@ if not exist "venv\Scripts\streamlit.exe" (
     exit /b 1
 )
 
-echo Iniciando Dashboard...
+echo Iniciando Dashboard em modo NATIVO...
 echo IMPORTANTE: Mantenha esta janela aberta!
 echo.
+echo NOTA: Esta versao usa a interface nativa do Streamlit
+echo (nao abre automaticamente no navegador)
+echo.
 
-"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501
+"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
 
 echo.
 echo Dashboard finalizado!

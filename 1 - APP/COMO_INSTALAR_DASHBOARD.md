@@ -50,14 +50,19 @@ pip install -r requirements.txt
 
 Após a instalação, você pode executar o Dashboard de várias formas:
 
-### Opção 1: Arquivo Batch (Mais Fácil)
+### Opção 1: Dashboard no Navegador (Recomendado)
 - Clique duas vezes em `EXECUTAR_DASHBOARD.bat`
+- Abre automaticamente no seu navegador web
 
-### Opção 2: Atalho na Área de Trabalho (Recomendado)
+### Opção 2: Dashboard Interface Nativa
+- Clique duas vezes em `EXECUTAR_STREAMLIT.bat`
+- Usa a interface nativa do Streamlit (não abre no navegador)
+
+### Opção 3: Atalho na Área de Trabalho
 - Use o atalho **"Dashboard KE5Z"** criado automaticamente na área de trabalho
-- Clique duas vezes no atalho para iniciar o Dashboard
+- Clique duas vezes no atalho para iniciar o Dashboard no navegador
 
-### Opção 3: Linha de Comando
+### Opção 4: Linha de Comando
 ```bash
 # Navegue até a pasta do projeto
 cd "1 - APP"
