@@ -7,6 +7,9 @@ echo ===============================================
 echo.
 cd /d "%~dp0"
 
+REM Restaurar configuracao normal (sem headless)
+copy ".streamlit\config_normal.toml" ".streamlit\config.toml" >nul 2>&1
+
 REM Verificar se o ambiente virtual existe
 if exist "venv\Scripts\streamlit.exe" (
     echo Ambiente virtual encontrado!

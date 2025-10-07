@@ -30,7 +30,10 @@ echo NOTA: Esta versao usa a interface nativa do Streamlit
 echo (nao abre automaticamente no navegador)
 echo.
 
-"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
+REM Copiar configuracao headless
+copy ".streamlit\config_headless.toml" ".streamlit\config.toml" >nul 2>&1
+
+"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501
 
 echo.
 echo Dashboard finalizado!
