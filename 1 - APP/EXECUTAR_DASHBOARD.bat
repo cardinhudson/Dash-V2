@@ -1,30 +1,7 @@
 @echo off
-chcp 65001 >nul 2>&1
-cd /d "%~dp0"
-
-echo ===============================================
-echo    DASHBOARD KE5Z - EXECUTANDO...
-echo ===============================================
+title Dashboard KE5Z
+echo Iniciando Dashboard KE5Z...
 echo.
-
-if exist "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe" (
-    echo ✅ Executável encontrado!
-    echo 🚀 Iniciando Dashboard...
-    echo.
-    echo ⚠️  IMPORTANTE: Mantenha esta janela aberta!
-    echo 🌐 O dashboard abrirá como aplicação desktop
-    echo.
-    "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe"
-) else (
-    echo ❌ Executável não encontrado!
-    echo 📁 Verificando pasta dist...
-    if exist "dist" (
-        echo 📄 Arquivos na pasta dist:
-        dir /b "dist"
-    ) else (
-        echo ❌ Pasta dist não existe!
-    )
-)
-
-echo.
+cd /d "c:\User\U235107\GitHub\Dash-V2\1 - APP"
+"c:\User\U235107\GitHub\Dash-V2\1 - APP\venv\Scripts\python.exe" dashboard_main.py
 pause
