@@ -15,8 +15,7 @@ if exist "venv\Scripts\streamlit.exe" (
     echo IMPORTANTE: Mantenha esta janela aberta!
     echo O dashboard abrira no seu navegador
     echo.
-    start "" "http://localhost:8501"
-    "venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
+    "venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501
 ) else (
     echo Ambiente virtual nao encontrado!
     echo Verificando se existe venv...
@@ -24,8 +23,7 @@ if exist "venv\Scripts\streamlit.exe" (
         echo Pasta venv existe mas streamlit.exe nao encontrado
         echo Tentando executar com python...
         if exist "venv\Scripts\python.exe" (
-            start "" "http://localhost:8501"
-            "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+            "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501
         ) else (
             echo Python nao encontrado no ambiente virtual!
         )
