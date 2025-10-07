@@ -5,7 +5,6 @@ developmentMode = false
 gatherUsageStats = false
 serverAddress = "localhost"
 serverPort = 8501
-serverHeadless = false
 
 [theme]
 primaryColor = "#FF6B6B"
