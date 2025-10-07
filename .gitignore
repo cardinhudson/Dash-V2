@@ -28,17 +28,30 @@ Thumbs.db
 # Build/Dist 
 build/ 
 dist/ 
-*.egg-info/ 
+*.egg-info/
+
+# Executáveis e aplicações compiladas
+*.exe
+*.app
+*.dmg
+*.msi
+*.deb
+*.rpm
+
+# Python portable
+python_portable/
+python311.zip 
  
 # Dados e artefatos grandes (mantidos fora do git) 
-*.parquet 
 *.csv 
-*.xlsx 
 *.xls 
 *.xlsm 
-*.zip 
 *.7z 
 *.rar
+
+# Apenas arquivos .txt grandes são ignorados
+**/Extracoes/KE5Z/*.txt
+**/Extracoes/KSBB/*.txt
 
 # Exceções - arquivos específicos que devem ser incluídos
 !KE5Z.7z
