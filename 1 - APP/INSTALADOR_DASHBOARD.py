@@ -140,11 +140,41 @@ class DashboardInstaller:
             # Script para Windows
             if platform.system() == "Windows":
                 launcher_content = f'''@echo off
+chcp 65001 >nul 2>&1
 title Dashboard KE5Z
-echo Iniciando Dashboard KE5Z...
+echo ===============================================
+echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo ===============================================
 echo.
 cd /d "{self.project_dir}"
-"{self.python_exe}" dashboard_main.py
+
+REM Verificar se o ambiente virtual existe
+if exist "venv\\Scripts\\streamlit.exe" (
+    echo Ambiente virtual encontrado!
+    echo Iniciando Dashboard via Streamlit...
+    echo.
+    echo IMPORTANTE: Mantenha esta janela aberta!
+    echo O dashboard abrira no seu navegador
+    echo.
+    "venv\\Scripts\\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
+) else (
+    echo Ambiente virtual nao encontrado!
+    echo Verificando se existe venv...
+    if exist "venv" (
+        echo Pasta venv existe mas streamlit.exe nao encontrado
+        echo Tentando executar com python...
+        if exist "venv\\Scripts\\python.exe" (
+            "venv\\Scripts\\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+        ) else (
+            echo Python nao encontrado no ambiente virtual!
+        )
+    ) else (
+        echo Pasta venv nao existe!
+        echo Execute primeiro o INSTALAR_DASHBOARD.bat
+    )
+)
+
+echo.
 pause
 '''
                 launcher_file = self.project_dir / "EXECUTAR_DASHBOARD.bat"
@@ -153,11 +183,29 @@ pause
                 
                 # Script alternativo
                 launcher_content2 = f'''@echo off
+chcp 65001 >nul 2>&1
 title Dashboard KE5Z - Streamlit
-echo Iniciando Dashboard KE5Z via Streamlit...
+echo ===============================================
+echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
+echo ===============================================
 echo.
 cd /d "{self.project_dir}"
-"{self.python_exe}" -m streamlit run dashboard_main.py
+
+REM Verificar se o ambiente virtual existe
+if exist "venv\\Scripts\\python.exe" (
+    echo Ambiente virtual encontrado!
+    echo Iniciando Dashboard via Streamlit (Python module)...
+    echo.
+    echo IMPORTANTE: Mantenha esta janela aberta!
+    echo O dashboard abrira no seu navegador
+    echo.
+    "venv\\Scripts\\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+) else (
+    echo Ambiente virtual nao encontrado!
+    echo Execute primeiro o INSTALAR_DASHBOARD.bat
+)
+
+echo.
 pause
 '''
                 launcher_file2 = self.project_dir / "EXECUTAR_STREAMLIT.bat"
@@ -175,6 +223,7 @@ pause
     def create_desktop_shortcut(self):
         """Cria atalho na área de trabalho (Windows)"""
         if platform.system() != "Windows":
+            print("ℹ️ Sistema não é Windows - atalho não será criado")
             return True
             
         print("🔗 Criando atalho na área de trabalho...")
@@ -186,6 +235,11 @@ pause
             desktop = winshell.desktop()
             shortcut_path = os.path.join(desktop, "Dashboard KE5Z.lnk")
             
+            # Verificar se já existe um atalho
+            if os.path.exists(shortcut_path):
+                print("ℹ️ Atalho já existe, substituindo...")
+                os.remove(shortcut_path)
+            
             target = str(self.project_dir / "EXECUTAR_DASHBOARD.bat")
             wDir = str(self.project_dir)
             
@@ -194,16 +248,22 @@ pause
             shortcut.Targetpath = target
             shortcut.WorkingDirectory = wDir
             shortcut.IconLocation = target
+            shortcut.Description = "Executar Dashboard KE5Z"
             shortcut.save()
             
-            print("✅ Atalho criado na área de trabalho!")
+            print("✅ Atalho 'Dashboard KE5Z' criado na área de trabalho!")
+            print(f"   📍 Localização: {shortcut_path}")
+            print(f"   🎯 Destino: {target}")
             return True
             
-        except ImportError:
-            print("⚠️ Aviso: Não foi possível criar atalho (dependências não disponíveis)")
+        except ImportError as e:
+            print("⚠️ Aviso: Dependências para criar atalho não disponíveis")
+            print(f"   Detalhes: {e}")
+            print("   O Dashboard funcionará normalmente, apenas sem atalho na área de trabalho")
             return True
         except Exception as e:
             print(f"⚠️ Aviso: Não foi possível criar atalho: {e}")
+            print("   O Dashboard funcionará normalmente, apenas sem atalho na área de trabalho")
             return True
     
     def verify_installation(self):

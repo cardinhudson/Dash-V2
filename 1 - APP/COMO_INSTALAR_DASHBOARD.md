@@ -53,8 +53,9 @@ Após a instalação, você pode executar o Dashboard de várias formas:
 ### Opção 1: Arquivo Batch (Mais Fácil)
 - Clique duas vezes em `EXECUTAR_DASHBOARD.bat`
 
-### Opção 2: Atalho na Área de Trabalho
-- Use o atalho criado automaticamente na área de trabalho
+### Opção 2: Atalho na Área de Trabalho (Recomendado)
+- Use o atalho **"Dashboard KE5Z"** criado automaticamente na área de trabalho
+- Clique duas vezes no atalho para iniciar o Dashboard
 
 ### Opção 3: Linha de Comando
 ```bash
