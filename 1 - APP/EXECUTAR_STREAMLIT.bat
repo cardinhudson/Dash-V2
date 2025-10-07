@@ -8,17 +8,29 @@ echo.
 cd /d "C:\Dash-V2\1 - APP"
 
 REM Verificar se o ambiente virtual existe
-if exist "venv\Scripts\python.exe" (
+if exist "venv\Scripts\streamlit.exe" (
     echo Ambiente virtual encontrado!
-    echo Iniciando Dashboard via Streamlit (Python module)...
+    echo Iniciando Dashboard via Streamlit (executavel direto)...
     echo.
     echo IMPORTANTE: Mantenha esta janela aberta!
     echo O dashboard abrira no seu navegador
     echo.
-    "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501
+    "venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501
 ) else (
-    echo Ambiente virtual nao encontrado!
-    echo Execute primeiro o INSTALAR_DASHBOARD.bat
+    echo Streamlit executavel nao encontrado!
+    echo Verificando se existe python...
+    if exist "venv\Scripts\python.exe" (
+        echo Ambiente virtual encontrado!
+        echo Iniciando Dashboard via Streamlit (Python module)...
+        echo.
+        echo IMPORTANTE: Mantenha esta janela aberta!
+        echo O dashboard abrira no seu navegador
+        echo.
+        "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501
+    ) else (
+        echo Python nao encontrado no ambiente virtual!
+        echo Execute primeiro o INSTALAR_DASHBOARD.bat
+    )
 )
 
 echo.
