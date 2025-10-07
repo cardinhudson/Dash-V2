@@ -50,6 +50,8 @@ python311.zip
 *.rar
 
 # Apenas arquivos .txt grandes são ignorados
+**/Extrações/KE5Z/*.txt
+**/Extrações/KSBB/*.txt
 **/Extracoes/KE5Z/*.txt
 **/Extracoes/KSBB/*.txt
 
