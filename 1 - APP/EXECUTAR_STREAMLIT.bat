@@ -5,7 +5,7 @@ echo ===============================================
 echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
 echo ===============================================
 echo.
-cd /d "C:\Dash-V2\1 - APP"
+cd /d "%~dp0"
 
 REM Verificar se o ambiente virtual existe
 if exist "venv\Scripts\streamlit.exe" (
