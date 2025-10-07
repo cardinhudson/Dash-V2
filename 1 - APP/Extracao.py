@@ -1,3 +1,4 @@
+# %%
 # SOLUÇÃO DEFINITIVA PARA PROBLEMA PYVENV.CFG
 import sys
 import os
@@ -40,9 +41,18 @@ print(f"Diretorio: {os.getcwd()}")
 
 import pandas as pd
 
+# Obter diretório base (onde está o executável)
+if hasattr(sys, '_MEIPASS'):
+    # Executando dentro do PyInstaller
+    base_dir = sys._MEIPASS
+    print(f"Executando dentro do PyInstaller: {base_dir}")
+else:
+    # Executando normalmente - usar diretório do script atual
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    print(f"Executando normalmente: {base_dir}")
 
 # Usar pasta local do projeto: Extracoes\KE5Z
-pasta = os.path.join("Extracoes", "KE5Z")
+pasta = os.path.join(base_dir, "Extracoes", "KE5Z")
 
 # Verificar se a pasta local existe
 if not os.path.exists(pasta):
@@ -95,45 +105,41 @@ for i, arquivo in enumerate(arquivos_txt, 1):
         df.columns = df.columns.str.strip()
         print("Limpando dados...")
         
-        # Filtrar a coluna 'Ano' com valores não nulos e diferentes de 0 (após strip)
-        if 'Ano' in df.columns:
-            df = df[df['Ano'].notna() & (df['Ano'] != 0)]
+        # Filtrar a coluna 'Ano' com valores não nulos e diferentes de 0
+        df = df[df['Ano'].notna() & (df['Ano'] != 0)]
         print(f"Após filtro Ano: {len(df):,} registros")
         
         # Substituir ',' por '.' e remover pontos de separação de milhar
         print("Convertendo coluna Em MCont...")
-        if 'Em MCont.' in df.columns:
-            df['Em MCont.'] = (
-                df['Em MCont.']
-                .str.replace('.', '', regex=False)
-                .str.replace(',', '.', regex=False)
-            )
-            # Converter a coluna para float, tratando erros
-            df['Em MCont.'] = pd.to_numeric(df['Em MCont.'], errors='coerce')
-            # Substituir valores NaN por 0 (ou outro valor padrão, se necessário)
-            df['Em MCont.'] = df['Em MCont.'].fillna(0)
+        df['Em MCont.'] = (
+            df['Em MCont.']
+            .str.replace('.', '', regex=False)
+            .str.replace(',', '.', regex=False)
+        )
+        # Converter a coluna para float, tratando erros
+        df['Em MCont.'] = pd.to_numeric(df['Em MCont.'], errors='coerce')
+        # Substituir valores NaN por 0 (ou outro valor padrão, se necessário)
+        df['Em MCont.'] = df['Em MCont.'].fillna(0)
 
         # Substituir ',' por '.' e remover pontos de separação de milhar
         print("Convertendo coluna Qtd...")
-        if 'Qtd.' in df.columns:
-            df['Qtd.'] = (
-                df['Qtd.']
-                .str.replace('.', '', regex=False)
-                .str.replace(',', '.', regex=False)
-            )
-            # Converter a coluna para float, tratando erros
-            df['Qtd.'] = pd.to_numeric(df['Qtd.'], errors='coerce')
-            # Substituir valores NaN por 0 (ou outro valor padrão, se necessário)
-            df['Qtd.'] = df['Qtd.'].fillna(0)
+        df['Qtd.'] = (
+            df['Qtd.']
+            .str.replace('.', '', regex=False)
+            .str.replace(',', '.', regex=False)
+        )
+        # Converter a coluna para float, tratando erros
+        df['Qtd.'] = pd.to_numeric(df['Qtd.'], errors='coerce')
+        # Substituir valores NaN por 0 (ou outro valor padrão, se necessário)
+        df['Qtd.'] = df['Qtd.'].fillna(0)
         
         # Adicionar o DataFrame à lista
         dataframes.append(df)
         print(f"{arquivo} processado com sucesso!")
         
         # Imprimir o valor total da coluna 'Em MCont.'
-        if 'Em MCont.' in df.columns:
-            total_em_mcont = df['Em MCont.'].sum()
-            print(f"Total Em MCont. em {arquivo}: {total_em_mcont:,.2f}")
+        total_em_mcont = df['Em MCont.'].sum()
+        print(f"Total Em MCont. em {arquivo}: {total_em_mcont:,.2f}")
         
     except Exception as e:
         print(f"Erro ao processar {arquivo}: {str(e)}")
@@ -176,30 +182,19 @@ colunas_para_remover = [
 df_total.drop(columns=colunas_para_remover, inplace=True, errors='ignore')
 print(df_total.columns)
 
-# mudar tipo da coluna 'Cliente' e 'Imobil.' para string (se existirem)
-if 'Cliente' in df_total.columns:
-    df_total['Cliente'] = df_total['Cliente'].astype(str)
-if 'Imobil.' in df_total.columns:
-    df_total['Imobil.'] = df_total['Imobil.'].astype(str)
+# mudar tipo da coluna 'Cliente' e 'Imobil.' para string
+df_total['Cliente'] = df_total['Cliente'].astype(str)  # Cliente restaurada
 
-# imprimir a coluna 'Em MCont.' (se existir)
-if 'Em MCont.' in df_total.columns:
-    print("Coluna 'Em MCont.' encontrada:")
-    print(df_total['Em MCont.'])
-else:
-    print("Coluna 'Em MCont.' não encontrada. Colunas disponíveis:")
-    print(df_total.columns.tolist())
+# imprimir a coluna 'Em MCont.'
+print(df_total['Em MCont.'])
 #
 #
 #
 #
 #
-# Modificar o nome da coluna 'Em MCont.' para 'Valor' (se existir)
-if 'Em MCont.' in df_total.columns:
-    df_total.rename(columns={'Em MCont.': 'Valor'}, inplace=True)
-    print("Coluna 'Em MCont.' renomeada para 'Valor'")
-else:
-    print("Coluna 'Em MCont.' não encontrada para renomeação")
+# %%
+# Modificar o nome da coluna 'Em MCont.' para 'Valor'
+df_total.rename(columns={'Em MCont.': 'Valor'}, inplace=True)
 
 # filtrar a coluna Nº conta não vazias e diferentes de 0
 df_total = df_total[df_total['Nº conta'].notna() & (df_total['Nº conta'] != 0)]
@@ -209,7 +204,7 @@ print(df_total.head(10))  # Exibir as primeiras linhas do DataFrame total
 
 
 # Usar pasta local do projeto para KSBB: Extracoes\KSBB
-pasta_ksbb = os.path.join("Extracoes", "KSBB")
+pasta_ksbb = os.path.join(base_dir, "Extracoes", "KSBB")
 
 # Verificar se a pasta local existe
 if not os.path.exists(pasta_ksbb):
@@ -293,86 +288,65 @@ if 'Material' in df_total.columns and 'Descrição Material' in df_total.columns
 
 # se a descrição do material nao for nula substituir o valor da coluna Texto pelo valor da Descrição Material
 if 'Texto' in df_total.columns and 'Descrição Material' in df_total.columns:
-    print("Atualizando coluna Texto com Descrição Material...")
-    # Usar where() que é muito mais rápido que apply() para operações simples
-    df_total['Texto'] = df_total['Descrição Material'].where(
-        df_total['Descrição Material'].notna(), 
-        df_total['Texto']
+    df_total['Texto'] = df_total.apply(
+        lambda row: (
+            row['Descrição Material']
+            if pd.notnull(row['Descrição Material'])
+            else row['Texto']
+        ),
+        axis=1,
     )
-    print("Coluna Texto atualizada com sucesso!")
 
 # imprimir os valores totais somarizado por periodo
 print(df_total.groupby('Período')['Valor'].sum())
 # mudar o tipo de coluna nº conta para string
 df_total['Nº conta'] = df_total['Nº conta'].astype(str)
 
-# Ler o arquivo Excel Dados SAPIENS.xlsx (se existir)
-arquivo_sapiens = r'Dados SAPIENS.xlsx'
-if os.path.exists(arquivo_sapiens):
-    print("Lendo arquivo Dados SAPIENS.xlsx...")
-    df_sapiens = pd.read_excel(arquivo_sapiens, sheet_name='Conta contabil')
-else:
-    print("AVISO: Arquivo Dados SAPIENS.xlsx não encontrado. Pulando merge com SAPIENS.")
-    df_sapiens = None
+# %%
+# Ler o arquivo Excel Dados SAPIENS.xlsx
+arquivo_sapiens = os.path.join(base_dir, 'Dados SAPIENS.xlsx')
+df_sapiens = pd.read_excel(arquivo_sapiens, sheet_name='Conta contabil')
 
-# mudar o nome da coluna 'CONTA SAPIENS' para Nº conta (se arquivo existir)
-if df_sapiens is not None:
-    df_sapiens.rename(columns={'CONTA SAPIENS': 'Nº conta'}, inplace=True)
-    print(df_sapiens.head())
-    # mudar o tipo da coluna Nº conta para string
-    df_sapiens['Nº conta'] = df_sapiens['Nº conta'].astype(str)
+# mudar o nome da coluna 'CONTA SAPIENS' para Nº conta
+df_sapiens.rename(columns={'CONTA SAPIENS': 'Nº conta'}, inplace=True)
+print(df_sapiens.head())
+# mudar o tipo da coluna Nº conta para string
+df_sapiens['Nº conta'] = df_sapiens['Nº conta'].astype(str)
 
-# Merger o arquivo df_total pela coluna Nº conta com o df_sapiens (se arquivo existir)
-if df_sapiens is not None:
-    df_total = pd.merge(
-        df_total,
-        df_sapiens[['Nº conta', 'Type 07', 'Type 06', 'Type 05']],
-        on='Nº conta',
-        how='left',
-    )
-    print("Merge com SAPIENS concluído!")
-else:
-    print("Pulando merge com SAPIENS - arquivo não encontrado.")
+# Merger o arquivo df_total pela coluna Nº conta com o df_sapiens pela coluna CONTA SAPIENS
+df_total = pd.merge(
+    df_total,
+    df_sapiens[['Nº conta', 'Type 07', 'Type 06', 'Type 05']],
+    on='Nº conta',
+    how='left',
+)
 
-# Ler o arquivo Excel Dados SAPIENS.xlsx e a aba CC (se arquivo existir)
-if os.path.exists(arquivo_sapiens):
-    df_CC = pd.read_excel(arquivo_sapiens, sheet_name='CC')
-else:
-    df_CC = None
+# Ler o arquivo Excel Dados SAPIENS.xlsx e a aba CC
+df_CC = pd.read_excel(arquivo_sapiens, sheet_name='CC')
 
-# mudar o nome da coluna CC SAPiens da df_sapiens para Centro cst (se arquivo existir)
-if df_CC is not None:
-    df_CC.rename(columns={'CC SAPiens': 'Centro cst'}, inplace=True)
-    
-    # Merge o df_total com o df_CC pela coluna Centro cst e trazer as colunas Ofincina e USI
-    df_total = pd.merge(
-        df_total,
-        df_CC[['Centro cst', 'Oficina', 'USI']],
-        on='Centro cst',
-        how='left',
-    )
-    print("Merge com CC concluído!")
-else:
-    print("Pulando merge com CC - arquivo não encontrado.")
-# Substituir na coluna 'USI' os valores NaN por 'Others' (se coluna existir)
-if 'USI' in df_total.columns:
-    df_total['USI'] = df_total['USI'].fillna('Others')
-else:
-    # Se não existe coluna USI, criar uma com valor padrão
-    df_total['USI'] = 'Others'
-    print("Coluna USI criada com valor padrão 'Others'")
-# Exibir as 10 primeiras linhas do df_total e as colunas disponíveis
-colunas_disponiveis = ['Nº conta', 'Centro cst', 'USI']
-colunas_opcionais = ['Type 07', 'Type 06', 'Type 05', 'Oficina']
+# mudar o nome da coluna CC SAPiens da df_sapiens para Centro cst
+df_CC.rename(columns={'CC SAPiens': 'Centro cst'}, inplace=True)
 
-# Adicionar colunas opcionais se existirem
-for col in colunas_opcionais:
-    if col in df_total.columns:
-        colunas_disponiveis.append(col)
+# Merge o df_total com o df_CC pela coluna Centro cst e trazer as colunas Ofincina e USI
+df_total = pd.merge(
+    df_total,
+    df_CC[['Centro cst', 'Oficina', 'USI']],
+    on='Centro cst',
+    how='left',
+)
+# Substituir na coluna 'USI' os valores NaN por 'Others'
+df_total['USI'] = df_total['USI'].fillna('Others')
+# Exibir as 10 primeiras linhas do df_total e as colunas de Nº conta, Type 07, Type 06, Type 05, Centro cst, Oficina e USI
+print(
+    df_total[
+        [
+            'Nº conta', 'Type 07', 'Type 06', 'Type 05',
+            'Centro cst', 'Oficina', 'USI'
+        ]
+    ].head(10)
+)
 
-print("Colunas disponíveis:", colunas_disponiveis)
-print(df_total[colunas_disponiveis].head(10))
-
+# %%
 # Limpar e converter tipos de dados antes de salvar parquet
 print("Limpando e convertendo tipos de dados...")
 
@@ -401,73 +375,57 @@ print("Tipos de dados após limpeza:")
 print(df_total.dtypes)
 
 
-# Salvar arquivo para extração PBI
-# ler arquivo fornecedores e desconsiderar as 3 primeiras linhas (se existir)
-arquivo_fornecedores = r"Fornecedores.xlsx"
-if os.path.exists(arquivo_fornecedores):
-    df_fornecedores = pd.read_excel(arquivo_fornecedores, skiprows=3)
-else:
-    print("AVISO: Arquivo Fornecedores.xlsx não encontrado. Pulando merge com fornecedores.")
-    df_fornecedores = None
-# remover linhas duplicadas pela coluna Fornecedor (se arquivo existir)
-if df_fornecedores is not None:
-    df_fornecedores = df_fornecedores.drop_duplicates(subset=['Fornecedor'])
-    # mudar o nome da coluna Fornecedor para Fornec.
-    df_fornecedores.rename(columns={'Fornecedor': 'Fornec.'}, inplace=True)
+# %% Salvar arquivo para extração PBI
+# ler arquivo fornecedores e desconsiderar as 3 primeiras linhas
+arquivo_fornecedores = os.path.join(base_dir, "Fornecedores.xlsx")
+df_fornecedores = pd.read_excel(arquivo_fornecedores, skiprows=3)
+# remover linhas duplicadas pela coluna Fornecedor
+df_fornecedores = df_fornecedores.drop_duplicates(subset=['Fornecedor'])
+# mudar o nome da coluna Fornecedor para Fornec.
+df_fornecedores.rename(columns={'Fornecedor': 'Fornec.'}, inplace=True)
 
-# mudar a coluna fornec. para string (se arquivo existir)
-if df_fornecedores is not None:
-    df_fornecedores['Fornec.'] = df_fornecedores['Fornec.'].astype(str)
-    
-    # merge o df_total com df_fornecedores pela coluna Fornec. retornando a coluna Fornecedor
-    df_total = pd.merge(
-        df_total,
-        df_fornecedores[['Fornec.', 'Nome do fornecedor']],
-        on='Fornec.',
-        how='left',
-    )
-    print("Merge com fornecedores concluído!")
-else:
-    print("Pulando merge com fornecedores - arquivo não encontrado.")
+# mudar a coluna fornec. para string
+df_fornecedores['Fornec.'] = df_fornecedores['Fornec.'].astype(str)
+
+# merge o df_total com df_fornecedores pela coluna Fornec. retornando a coluna Fornecedor
+df_total = pd.merge(
+    df_total,
+    df_fornecedores[['Fornec.', 'Nome do fornecedor']],
+    on='Fornec.',
+    how='left',
+)
 # mudar o nome da coluna Nome do fornecedor para Fornecedor
 df_total.rename(columns={'Nome do fornecedor': 'Fornecedor'}, inplace=True)
 
 
 
 # Atualizar o nome do fornecedor com as provisoes
-# Precimos ler o arquivo Dados SAPIENS.xlsx na pasta do projeto na guia Hist_prov (se existir)
+# Precimos ler o arquivo Dados SAPIENS.xlsx na pasta do projeto na guia Hist_prov 
 # desconsiderar a primeira linha do arquivo
-arquivo_hist_prov = r"Dados SAPIENS.xlsx"
-if os.path.exists(arquivo_hist_prov):
-    df_hist_prov = pd.read_excel(arquivo_hist_prov, sheet_name='Hist_prov', skiprows=1)
-else:
-    print("AVISO: Arquivo Dados SAPIENS.xlsx não encontrado. Pulando merge com Hist_prov.")
-    df_hist_prov = None
-# excluir todas as colunas menos as colunas 'Nome do fornecedor', '20carac' (se arquivo existir)
-if df_hist_prov is not None:
-    df_hist_prov = df_hist_prov[['Nome do fornecedor', '20carac']]
-    # Remover os espaços da coluna '20carac'
-    df_hist_prov['20carac'] = df_hist_prov['20carac'].str.strip()
+arquivo_hist_prov = os.path.join(base_dir, "Dados SAPIENS.xlsx")
+df_hist_prov = pd.read_excel(arquivo_hist_prov, sheet_name='Hist_prov', skiprows=1)
+# excluir todas as colunas menos as colunas 'Nome do fornecedor', '20carac'
+df_hist_prov = df_hist_prov[['Nome do fornecedor', '20carac']]
+# Remover os espaços da coluna '20carac'
+df_hist_prov['20carac'] = df_hist_prov['20carac'].str.strip()
 
-# remover linhas duplicadas pela coluna '20carac' (se arquivo existir)
-if df_hist_prov is not None:
-    df_hist_prov = df_hist_prov.drop_duplicates(subset=['20carac'])
-    
-    # criar uma coluna no df_total chamada '20carac' (primeiros 20 caracteres do Fornec.) 
-    df_total['20carac'] = df_total['Texto'].astype(str).str[:20]
-    # Remover os espaços da coluna '20carac'
-    df_total['20carac'] = df_total['20carac'].str.strip()
-    
-    # merge o df_total com df_hist_prov pela coluna 20carac retornando a coluna 'Nome do fornecedor'
-    df_total = pd.merge(
-        df_total,
-        df_hist_prov[['20carac', 'Nome do fornecedor']],
-        on='20carac',
-        how='left',
-    )
-    print("Merge com Hist_prov concluído!")
-else:
-    print("Pulando merge com Hist_prov - arquivo não encontrado.")
+# remover linhas duplicadas pela coluna '20carac'
+df_hist_prov = df_hist_prov.drop_duplicates(subset=['20carac'])
+
+# criar uma coluna no df_total chamada '20carac' (primeiros 20 caracteres do Fornec.) 
+df_total['20carac'] = df_total['Texto'].astype(str).str[:20]
+# Remover os espaços da coluna '20carac'
+df_total['20carac'] = df_total['20carac'].str.strip()
+
+
+
+# merge o df_total com df_hist_prov pela coluna 20carac retornando a coluna 'Nome do fornecedor'
+df_total = pd.merge(
+    df_total,
+    df_hist_prov[['20carac', 'Nome do fornecedor']],
+    on='20carac',
+    how='left',
+)
 
 # Se a coluna 'Nome do fornecedor' não for nula, substituir o valor da coluna Fornecedor pelo valor da coluna 'Nome do fornecedor'
 if 'Nome do fornecedor' in df_total.columns and 'Fornecedor' in df_total.columns:
@@ -482,18 +440,13 @@ if 'Nome do fornecedor' in df_total.columns and 'Fornecedor' in df_total.columns
 
 
 # Colocar as colunas Type 07, Type 06, Type 05 que forem vazias ou nulas como Others
-# Substituir nas colunas Type os valores NaN por 'Others' (se existirem)
-for col in ['Type 07', 'Type 06', 'Type 05']:
-    if col in df_total.columns:
-        df_total[col] = df_total[col].fillna('Others')
-    else:
-        # Se não existe coluna Type, criar uma com valor padrão
-        df_total[col] = 'Others'
-        print(f"Coluna {col} criada com valor padrão 'Others'")
+df_total['Type 07'] = df_total['Type 07'].fillna('Others')
+df_total['Type 06'] = df_total['Type 06'].fillna('Others')
+df_total['Type 05'] = df_total['Type 05'].fillna('Others')
 
 
 # # gerar um arquivo parquet do df_total atualizado
-pasta_parquet = r"KE5Z"
+pasta_parquet = os.path.join(base_dir, "KE5Z")
 os.makedirs(pasta_parquet, exist_ok=True)
 print(f"Pasta parquet criada: {pasta_parquet}")
 
@@ -621,14 +574,11 @@ else:
 
 #
 #
+# %%
 # Salvar arquivos Excel na pasta local do projeto
 
 # organizar a ordem das colunas em Período	Nºconta	Centrocst	doc.ref.	Dt.lçto.	Cen.lucro	 Valor 	QTD	Type 05	Type 06	Account	USI	Oficina	Doc.compra	Texto breve	Fornecedor	Material	DESCRIÇÃO SAPIENS	Usuário	Cofor	Tipo
-# Selecionar apenas as colunas que existem
-colunas_finais = ['Período', 'Nº conta', 'Centro cst', 'doc.ref', 'Dt.lçto.', 'Valor', 'Qtd.', 'Type 05', 'Type 06', 'Type 07', 'USI', 'Doc.compra', 'Texto', 'Material', 'Usuário', 'Fornec.', 'Tipo']
-colunas_existentes = [col for col in colunas_finais if col in df_total.columns]
-print(f"Colunas finais selecionadas: {colunas_existentes}")
-df_total = df_total[colunas_existentes]
+df_total = df_total[['Período', 'Nº conta', 'Centro cst', 'doc.ref', 'Dt.lçto.', 'Valor', 'Qtd.', 'Type 05', 'Type 06', 'Type 07', 'USI', 'Oficina', 'Doc.compra', 'Texto', 'Fornecedor', 'Material', 'Usuário', 'Fornec.', 'Tipo']]
 
 # mudar os nomes das colunas para Nºconta, Centrocst, Nºdoc.ref., QTD, Texto
 df_total.rename(columns={'Texto': 'Texto breve'}, inplace=True)
@@ -652,7 +602,7 @@ df_total = df_total[colunas]
 
 
 # Criar pasta 'arquivos' local para salvar os arquivos Excel
-pasta_arquivos = "arquivos"
+pasta_arquivos = os.path.join(base_dir, "arquivos")
 os.makedirs(pasta_arquivos, exist_ok=True)
 print(f"Pasta de arquivos criada: {pasta_arquivos}")
 

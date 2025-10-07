@@ -322,8 +322,11 @@ if 'Período' in df_total.columns:
     st.sidebar.info(f"📈 {len(df_mes):,} registros neste período")
     
     # Mostrar economia de dados
-    reducao_percentual = (1 - len(df_mes) / len(df_total)) * 100
-    st.sidebar.success(f"⚡ Redução: {reducao_percentual:.1f}% dos dados")
+    if len(df_total) > 0:
+        reducao_percentual = (1 - len(df_mes) / len(df_total)) * 100
+        st.sidebar.success(f"⚡ Redução: {reducao_percentual:.1f}% dos dados")
+    else:
+        st.sidebar.warning("⚠️ Nenhum dado disponível")
     
 else:
     st.sidebar.error("❌ Coluna 'Mes' ou 'Período' não encontrada nos dados!")
@@ -674,7 +677,7 @@ if not df_mes.empty:
         # Mostrar status e botão (sempre disponível no modo local, restrito no cloud)
         if not is_modo_cloud() or len(df_mes) <= limite_atual:
             # Mostrar status do arquivo
-            if is_modo_cloud():
+            if is_modo_cloud() and limite_atual > 0:
                 percentual = (len(df_mes) / limite_atual) * 100
                 if percentual < 50:
                     st.success(f"✅ **Download seguro:** {len(df_mes):,} linhas ({percentual:.1f}% do limite cloud)")
@@ -736,9 +739,12 @@ if not df_mes.empty:
                         st.warning(f"⚠️ **Atenção:** Arquivo grande ({len(df_download):,} linhas), mas dentro do limite")
                     
                     # Mostrar progresso em relação ao limite
-                    percentual_limite = (len(df_download) / limite_atual) * 100
-                    st.progress(min(percentual_limite / 100, 1.0))
-                    st.caption(f"📊 Uso do limite: {percentual_limite:.1f}% de {limite_atual:,} linhas")
+                    if limite_atual > 0:
+                        percentual_limite = (len(df_download) / limite_atual) * 100
+                        st.progress(min(percentual_limite / 100, 1.0))
+                        st.caption(f"📊 Uso do limite: {percentual_limite:.1f}% de {limite_atual:,} linhas")
+                    else:
+                        st.caption(f"📊 {len(df_download):,} linhas (sem limite)")
                     
                     # Salvar temporariamente com verificação adicional
                     try:
