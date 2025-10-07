@@ -15,7 +15,7 @@ if exist "venv\Scripts\python.exe" (
     echo IMPORTANTE: Mantenha esta janela aberta!
     echo O dashboard abrira no seu navegador
     echo.
-    "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+    "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8502 --server.headless true
 ) else (
     echo Ambiente virtual nao encontrado!
     echo Execute primeiro o INSTALAR_DASHBOARD.bat
