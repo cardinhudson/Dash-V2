@@ -5,30 +5,30 @@ echo ===============================================
 echo    DASHBOARD KE5Z - EXECUTANDO VIA STREAMLIT
 echo ===============================================
 echo.
-cd /d "%~dp0"
+cd /d "C:\Dash-V2\1 - APP"
 
 REM Verificar se o ambiente virtual existe
-if exist "venv\Scripts\streamlit.exe" (
+if exist "venv_dashboard\Scripts\streamlit.exe" (
     echo Ambiente virtual encontrado!
     echo Iniciando Dashboard via Streamlit...
     echo.
     echo IMPORTANTE: Mantenha esta janela aberta!
     echo O dashboard abrira no seu navegador
     echo.
-    "venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
+    "venv_dashboard\Scripts\streamlit.exe" run dashboard_main.py --server.port 8501 --server.headless true
 ) else (
     echo Ambiente virtual nao encontrado!
-    echo Verificando se existe venv...
-    if exist "venv" (
-        echo Pasta venv existe mas streamlit.exe nao encontrado
+    echo Verificando se existe venv_dashboard...
+    if exist "venv_dashboard" (
+        echo Pasta venv_dashboard existe mas streamlit.exe nao encontrado
         echo Tentando executar com python...
-        if exist "venv\Scripts\python.exe" (
-            "venv\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
+        if exist "venv_dashboard\Scripts\python.exe" (
+            "venv_dashboard\Scripts\python.exe" -m streamlit run dashboard_main.py --server.port 8501 --server.headless true
         ) else (
             echo Python nao encontrado no ambiente virtual!
         )
     ) else (
-        echo Pasta venv nao existe!
+        echo Pasta venv_dashboard nao existe!
         echo Execute primeiro o INSTALAR_DASHBOARD.bat
     )
 )
