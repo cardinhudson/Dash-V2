@@ -1,7 +1,7 @@
 @echo off
-title Dashboard KE5Z - Streamlit (Interface Nativa)
+title Dashboard KE5Z - Streamlit Desktop
 echo ===============================================
-echo    DASHBOARD KE5Z - INTERFACE NATIVA STREAMLIT
+echo    DASHBOARD KE5Z - STREAMLIT DESKTOP
 echo ===============================================
 echo.
 
@@ -23,23 +23,19 @@ if not exist "venv\Scripts\streamlit.exe" (
     exit /b 1
 )
 
-echo Iniciando Dashboard em modo DESKTOP NATIVO...
+echo Iniciando Dashboard via Streamlit Desktop...
+echo.
 echo IMPORTANTE: Mantenha esta janela aberta!
-echo.
-echo NOTA: Esta versao usa o Streamlit em modo desktop
-echo (interface nativa, nao navegador)
+echo O Dashboard abrira automaticamente
 echo.
 
-REM Copiar configuracao para modo desktop
-copy ".streamlit\config_headless.toml" ".streamlit\config.toml" >nul 2>&1
+REM Restaurar configuracao normal para garantir que funcione
+if exist ".streamlit\config_normal.toml" (
+    copy ".streamlit\config_normal.toml" ".streamlit\config.toml" >nul 2>&1
+)
 
-echo ✅ Iniciando interface desktop nativa...
-echo.
-echo O Dashboard abrira em uma janela desktop separada
-echo (nao no navegador)
-echo.
-
-"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8502 --server.headless true
+REM Executar Streamlit normalmente
+"venv\Scripts\streamlit.exe" run dashboard_main.py --server.port 8502
 
 echo.
 echo Dashboard finalizado!
