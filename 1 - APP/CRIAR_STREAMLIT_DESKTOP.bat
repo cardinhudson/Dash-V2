@@ -29,35 +29,45 @@ echo    PASSO 1: VERIFICANDO PYTHON
 echo ===============================================
 echo.
 
-REM Verificar se Python esta instalado
+REM Verificar se Python esta instalado ou se existe Python portavel
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python nao encontrado!
+    echo ❌ Python nao encontrado no sistema!
     echo.
-    echo Para continuar, voce precisa instalar o Python 3.7 ou superior.
-    echo.
-    echo Opcoes:
-    echo 1. Instalar Python manualmente: https://www.python.org/downloads/
-    echo 2. Usar o instalador automatico (recomendado)
-    echo.
-    echo Deseja abrir o site de download do Python? (S/N)
-    set /p choice="Digite sua escolha: "
-    if /i "%choice%"=="S" (
-        start "" "https://www.python.org/downloads/"
-        echo.
-        echo Apos instalar o Python, execute este script novamente.
-        echo.
-        pause
-        exit /b 1
+    echo Verificando se existe Python portavel...
+    if exist "python_portavel\python.exe" (
+        echo ✅ Python portavel encontrado!
+        echo Usando Python portavel existente...
+        set PYTHON_CMD=python_portavel\python.exe
     ) else (
+        echo ❌ Python portavel tambem nao encontrado!
         echo.
-        echo Instalacao cancelada.
-        pause
-        exit /b 1
+        echo Para continuar, voce precisa instalar o Python 3.7 ou superior.
+        echo.
+        echo Opcoes:
+        echo 1. Instalar Python manualmente: https://www.python.org/downloads/
+        echo 2. Usar o instalador automatico (recomendado)
+        echo.
+        echo Deseja abrir o site de download do Python? (S/N)
+        set /p choice="Digite sua escolha: "
+        if /i "%choice%"=="S" (
+            start "" "https://www.python.org/downloads/"
+            echo.
+            echo Apos instalar o Python, execute este script novamente.
+            echo.
+            pause
+            exit /b 1
+        ) else (
+            echo.
+            echo Instalacao cancelada.
+            pause
+            exit /b 1
+        )
     )
 ) else (
-    echo ✅ Python encontrado!
+    echo ✅ Python encontrado no sistema!
     python --version
+    set PYTHON_CMD=python
 )
 
 echo.
@@ -67,7 +77,7 @@ echo ===============================================
 echo.
 
 echo Criando ambiente virtual Python...
-python -m venv venv
+%PYTHON_CMD% -m venv venv
 if errorlevel 1 (
     echo ❌ Erro ao criar ambiente virtual!
     echo.
