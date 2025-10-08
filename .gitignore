@@ -27,7 +27,8 @@ Thumbs.db
  
 # Build/Dist 
 build/ 
-dist/ 
+dist/
+!dist/Dashboard_KE5Z_Desktop/
 *.egg-info/
 
 # Executáveis e aplicações compiladas
