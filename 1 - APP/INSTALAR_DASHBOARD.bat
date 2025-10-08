@@ -181,11 +181,11 @@ echo.
 echo Organizando pasta para distribuicao...
 
 REM Verificar se o executavel foi criado
-if exist "dist\Dashboard_KE5Z.exe" (
+if exist "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe" (
     echo ✅ Executavel desktop encontrado!
     
     REM Mover executavel para a pasta principal
-    move "dist\Dashboard_KE5Z.exe" "Dashboard_KE5Z_Desktop.exe"
+    move "dist\Dashboard_KE5Z\Dashboard_KE5Z.exe" "Dashboard_KE5Z_Desktop.exe"
     
     REM Criar script de execucao principal
     echo @echo off > "EXECUTAR_DASHBOARD_DESKTOP.bat"
