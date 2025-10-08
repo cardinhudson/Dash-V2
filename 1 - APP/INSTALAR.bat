@@ -136,16 +136,39 @@ if errorlevel 1 (
 echo ✅ PyInstaller instalado!
 echo.
 
-REM Criar executavel
-echo Criando executavel standalone...
-%PYTHON_CMD% -m PyInstaller --onefile --name Dashboard_KE5Z --add-data "pages;pages" --add-data "arquivos;arquivos" --add-data "KE5Z;KE5Z" --add-data "usuarios_padrao.json;." --add-data "auth_simple.py;." --add-data "Extracao.py;." --add-data "Fornecedores.xlsx;." --add-data "Dados SAPIENS.xlsx;." --add-data "dados_equipe.json;." dashboard_main.py
+REM Limpar pastas anteriores
+echo Limpando pastas anteriores...
+if exist "build" rmdir /s /q "build"
+if exist "dist" rmdir /s /q "dist"
+if exist "*.spec" del "*.spec"
+echo ✅ Pastas limpas!
+echo.
+
+REM Instalar streamlit-desktop-app
+echo Instalando streamlit-desktop-app...
+%PYTHON_CMD% -m pip install streamlit-desktop-app
 if errorlevel 1 (
-    echo ❌ Erro ao criar executavel!
+    echo ❌ Erro ao instalar streamlit-desktop-app!
     echo.
     pause
     exit /b 1
 )
-echo ✅ Executavel criado!
+echo ✅ streamlit-desktop-app instalado!
+echo.
+
+REM Criar executavel desktop
+echo Criando executavel desktop standalone...
+echo NOTA: Esta versao cria um executavel desktop que funciona como aplicativo nativo.
+%PYTHON_CMD% -m streamlit-desktop-app build dashboard_main.py --name Dashboard_KE5Z_Desktop --pyinstaller-options --onefile --noconfirm
+if errorlevel 1 (
+    echo ❌ Erro ao criar executavel desktop!
+    echo.
+    echo SOLUCAO: Use o EXECUTAR.bat que executa via Python diretamente.
+    echo.
+    pause
+    exit /b 1
+)
+echo ✅ Executavel desktop criado!
 echo.
 
 echo ===============================================
@@ -154,14 +177,14 @@ echo ===============================================
 echo.
 
 REM Mover executavel para a pasta principal
-echo Movendo executavel...
-if exist "dist\Dashboard_KE5Z.exe" (
-    move "dist\Dashboard_KE5Z.exe" "Dashboard_KE5Z.exe"
+echo Movendo executavel desktop...
+if exist "dist\Dashboard_KE5Z_Desktop.exe" (
+    move "dist\Dashboard_KE5Z_Desktop.exe" "Dashboard_KE5Z_Desktop.exe"
     rmdir /s /q dist
     rmdir /s /q build
-    echo ✅ Executavel movido!
+    echo ✅ Executavel desktop movido!
 ) else (
-    echo ❌ Executavel nao encontrado!
+    echo ❌ Executavel desktop nao encontrado!
     echo.
     pause
     exit /b 1
