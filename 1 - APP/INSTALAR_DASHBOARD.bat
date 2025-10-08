@@ -2,43 +2,39 @@
 chcp 65001 >nul
 setlocal
 
-set "SRC=%~dp0dist\Dashboard_KE5Z_Desktop"
 set "DST=%~dp0Dashboard_KE5Z_FINAL_DESKTOP"
 set "INT=%DST%\_internal"
 
 echo ===============================================
-echo   INSTALADOR - DASHBOARD KE5Z DESKTOP
+echo   INSTALADOR SIMPLES - DASHBOARD KE5Z
 echo ===============================================
-echo Fonte: "%SRC%"
 echo Destino: "%DST%"
 
-if not exist "%SRC%\Dashboard_KE5Z_Desktop.exe" (
+rem Procurar executavel em diferentes locais
+set "EXE="
+if exist "%~dp0dist\Dashboard_KE5Z_Desktop\Dashboard_KE5Z_Desktop.exe" (
+  set "EXE=%~dp0dist\Dashboard_KE5Z_Desktop\Dashboard_KE5Z_Desktop.exe"
+  set "SRC=%~dp0dist\Dashboard_KE5Z_Desktop"
+) else if exist "%~dp0Dashboard_KE5Z_Desktop.exe" (
+  set "EXE=%~dp0Dashboard_KE5Z_Desktop.exe"
+  set "SRC=%~dp0"
+) else if exist "%~dp0..\Dashboard_KE5Z_Desktop.exe" (
+  set "EXE=%~dp0..\Dashboard_KE5Z_Desktop.exe"
+  set "SRC=%~dp0.."
+) else (
   echo.
-  echo Build nao encontrado. Executando build automaticamente...
+  echo ERRO: Executavel nao encontrado!
+  echo Procurando em:
+  echo   - %~dp0dist\Dashboard_KE5Z_Desktop\
+  echo   - %~dp0
+  echo   - %~dp0..
   echo.
-  
-  rem Verificar se PyInstaller esta disponivel
-  python -m PyInstaller --version >nul 2>&1
-  if errorlevel 1 (
-    echo ERRO: PyInstaller nao encontrado.
-    echo Instale com: pip install pyinstaller
-    pause
-    exit /b 1
-  )
-  
-  echo Executando build com PyInstaller...
-  python -m PyInstaller dashboard.spec --clean --noconfirm
-  
-  if not exist "%SRC%\Dashboard_KE5Z_Desktop.exe" (
-    echo.
-    echo ERRO: Build falhou. Verifique os erros acima.
-    pause
-    exit /b 1
-  )
-  
-  echo Build concluido com sucesso!
-  echo.
+  echo Execute primeiro o INSTALAR_DASHBOARD.bat para compilar.
+  pause
+  exit /b 1
 )
+
+echo Executavel encontrado: "%EXE%"
 
 if exist "%DST%" (
   echo Limpando instalacao anterior...
@@ -47,7 +43,11 @@ if exist "%DST%" (
 mkdir "%DST%"
 
 echo Copiando executavel e dependencias...
-xcopy "%SRC%\*" "%DST%\" /E /I /Y >nul
+if exist "%SRC%\_internal" (
+  xcopy "%SRC%\*" "%DST%\" /E /I /Y >nul
+) else (
+  copy /Y "%EXE%" "%DST%\" >nul
+)
 
 rem ==== Copiar arquivos/diretorios requeridos para dentro de _internal ====
 if not exist "%INT%" mkdir "%INT%"
@@ -79,5 +79,8 @@ echo.
 echo Instalacao concluida com sucesso!
 echo Pasta: "%DST%"
 echo Atalho: Desktop\Dashboard KE5Z Desktop.lnk
+echo.
+echo Para abrir o Dashboard, use o atalho na area de trabalho
+echo ou execute: ABRIR_DASHBOARD.bat
 
 pause
