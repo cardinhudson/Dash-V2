@@ -42,24 +42,34 @@ if errorlevel 1 (
     ) else (
         echo ❌ Python portavel tambem nao encontrado!
         echo.
-        echo Para continuar, voce precisa instalar o Python 3.7 ou superior.
+        echo Baixando e instalando Python automaticamente...
         echo.
-        echo Opcoes:
-        echo 1. Instalar Python manualmente: https://www.python.org/downloads/
-        echo 2. Usar o instalador automatico (recomendado)
-        echo.
-        echo Deseja abrir o site de download do Python? (S/N)
-        set /p choice="Digite sua escolha: "
-        if /i "%choice%"=="S" (
-            start "" "https://www.python.org/downloads/"
+        
+        REM Criar pasta para Python portavel
+        if not exist "python_portavel" mkdir "python_portavel"
+        
+        REM Baixar Python portavel automaticamente
+        echo Baixando Python 3.11.7 portavel...
+        powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe' -OutFile 'python_portavel\python-3.11.7-amd64.exe'}"
+        
+        if exist "python_portavel\python-3.11.7-amd64.exe" (
+            echo ✅ Python baixado com sucesso!
             echo.
-            echo Apos instalar o Python, execute este script novamente.
-            echo.
-            pause
-            exit /b 1
+            echo Instalando Python automaticamente...
+            "python_portavel\python-3.11.7-amd64.exe" /quiet InstallAllUsers=0 PrependPath=0 Include_test=0
+            
+            if exist "python_portavel\python.exe" (
+                echo ✅ Python instalado com sucesso!
+                set PYTHON_CMD=python_portavel\python.exe
+            ) else (
+                echo ❌ Erro ao instalar Python!
+                echo.
+                pause
+                exit /b 1
+            )
         ) else (
+            echo ❌ Erro ao baixar Python!
             echo.
-            echo Instalacao cancelada.
             pause
             exit /b 1
         )
