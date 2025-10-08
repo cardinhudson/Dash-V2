@@ -11,6 +11,7 @@ datas = [
     ('auth_simple.py', '.'),
     ('usuarios_padrao.json', '.'),
     ('usuarios.json', '.'),
+    ('dados_equipe.json', '.'),
     ('KE5Z', 'KE5Z'),
     ('pages', 'pages'),
     ('.streamlit', '.streamlit'),
@@ -19,6 +20,7 @@ datas = [
     ('Dados SAPIENS.xlsx', '.'),
     ('Fornecedores.xlsx', '.'),
     ('Extracoes', 'Extracoes'),
+    ('arquivos', 'arquivos'),
     ('streamlit_desktop_config.py', '.'),
 ]
 
@@ -27,6 +29,11 @@ datas += copy_metadata('pandas')
 datas += copy_metadata('altair')
 datas += copy_metadata('plotly')
 datas += copy_metadata('streamlit-desktop-app')
+datas += copy_metadata('pywebview')
+datas += copy_metadata('numpy')
+datas += copy_metadata('openpyxl')
+datas += copy_metadata('xlrd')
+datas += copy_metadata('pyarrow')
 
 a = Analysis(
     ['streamlit_desktop_config.py'],
@@ -44,14 +51,23 @@ a = Analysis(
         'streamlit.components',
         'streamlit.components.v1',
         'pandas',
+        'pandas.io.excel',
+        'pandas.io.parquet',
         'altair',
         'plotly',
         'plotly.graph_objects',
+        'plotly.express',
+        'numpy',
+        'openpyxl',
+        'xlrd',
+        'pyarrow',
+        'pyarrow.parquet',
         'hashlib',
         'datetime',
         'json',
         'os',
         'sys',
+        'pathlib',
         'importlib.metadata',
         'importlib.metadata._adapters',
         'importlib.metadata._collections',
@@ -70,6 +86,14 @@ a = Analysis(
         'streamlit_desktop_app',
         'pywebview',
         'webview',
+        'pywebview.platforms.cef',
+        'pywebview.platforms.edgehtml',
+        'pywebview.platforms.mshtml',
+        'pywebview.platforms.gtk',
+        'pywebview.platforms.qt',
+        'pywebview.platforms.cocoa',
+        'pywebview.platforms.android',
+        'pywebview.platforms.winforms',
     ],
     hookspath=[],
     hooksconfig={},
@@ -97,7 +121,7 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,  # Mudado para False para app desktop
+    console=True,  # Temporariamente True para debug
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch='x86_64',
