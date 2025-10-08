@@ -57,3 +57,5 @@ echo.
 echo Para testar, execute: "%DST%\Dashboard_KE5Z_Desktop.exe"
 
 pause
+
+

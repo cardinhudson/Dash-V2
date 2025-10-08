@@ -1,8 +1,0 @@
-python311.zip
-.
-
-# Uncomment to run site.main() automatically
-#import site
-import site 
- 
-import sys; sys.path.append('python_portavel\\Lib\\site-packages') 
