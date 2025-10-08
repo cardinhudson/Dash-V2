@@ -53,8 +53,8 @@ python311.zip
 # Apenas arquivos .txt grandes são ignorados
 **/Extrações/KE5Z/*.txt
 **/Extrações/KSBB/*.txt
-**/Extracoes/KE5Z/*.txt
-**/Extracoes/KSBB/*.txt
+# **/Extracoes/KE5Z/*.txt - REMOVIDO (necessário para funcionamento)
+# **/Extracoes/KSBB/*.txt - REMOVIDO (necessário para funcionamento)
 
 # Exceções - arquivos específicos que devem ser incluídos
 !KE5Z.7z

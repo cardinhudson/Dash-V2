@@ -41,7 +41,7 @@ echo.
 echo Fechando processos do Dashboard em execucao...
 taskkill /f /im "Dashboard_KE5Z_Desktop.exe" >nul 2>&1
 taskkill /f /im "python.exe" >nul 2>&1
-timeout /t 2 /nobreak >nul
+timeout /t 2 /nobreak >nul 2>&1
 
 rem ==== LIMPEZA FORCADA ====
 if exist "%DST%" (
