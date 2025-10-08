@@ -1,7 +1,7 @@
 @echo off
-title Criar Streamlit Desktop App - Dashboard KE5Z
+title Instalar Dashboard KE5Z
 echo ===============================================
-echo    CRIAR STREAMLIT DESKTOP APP - DASHBOARD KE5Z
+echo    INSTALAR DASHBOARD KE5Z
 echo ===============================================
 echo.
 echo Este script vai criar um aplicativo Streamlit Desktop
