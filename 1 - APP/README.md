@@ -1,20 +1,18 @@
-# 🚀 Dashboard KE5Z - Pasta Limpa e Funcional
+# 🚀 Dashboard KE5Z - Simples e Funcional
 
 ## 📋 **Arquivos Essenciais**
 
 ### **🔧 Script de Instalação:**
-- `INSTALAR_DASHBOARD.bat` - Instala e cria executável desktop standalone
+- `INSTALAR.bat` - Instala tudo automaticamente
 
-### **🎯 Scripts de Execução:**
-- `EXECUTAR_DASHBOARD.bat` - Executa o Dashboard no navegador (requer instalação)
-- `EXECUTAR_STREAMLIT.bat` - Executa o Dashboard via Streamlit (requer instalação)
-- `EXECUTAR_DASHBOARD_FINAL.bat` - Executa o executável desktop final
+### **🎯 Script de Execução:**
+- `EXECUTAR.bat` - Executa o Dashboard
 
 ### **📁 Arquivos do Dashboard:**
 - `dashboard_main.py` - Arquivo principal do Dashboard
 - `pages/` - Páginas do Dashboard
 - `arquivos/` - Dados do Dashboard
-- `dados_equipe.json` - Dados da equipe
+- `KE5Z/` - Dados processados
 - `usuarios_padrao.json` - Usuários padrão
 - `requirements.txt` - Dependências Python
 
@@ -23,37 +21,39 @@
 ## 🚀 **Como Usar**
 
 ### **1️⃣ Primeiro: Instalar o Dashboard**
-1. **Clique duplo em:** `INSTALAR_DASHBOARD.bat`
-2. **Aguarde a instalação** (10-15 minutos)
+1. **Clique duplo em:** `INSTALAR.bat`
+2. **Aguarde a instalação** (5-10 minutos)
 3. **O script instala tudo automaticamente**
 
 ### **2️⃣ Depois: Executar o Dashboard**
-1. **Clique duplo em:** `EXECUTAR_DASHBOARD_FINAL.bat` (executável desktop)
-2. **Ou clique duplo em:** `EXECUTAR_DASHBOARD.bat` (navegador)
-3. **Ou clique duplo em:** `EXECUTAR_STREAMLIT.bat` (streamlit)
+1. **Clique duplo em:** `EXECUTAR.bat`
+2. **O Dashboard abre automaticamente**
 
 ---
 
 ## 📦 **Para Distribuir**
 
-### **Opção 1: Pasta atual (requer Python)**
-- Copie a pasta `1 - APP` completa
-- Execute `EXECUTAR_DASHBOARD.bat` no PC de destino
-
-### **Opção 2: Executável desktop (não requer Python)**
-- Execute `INSTALAR_DASHBOARD.bat` primeiro
-- Copie a pasta `1 - APP` completa
-- Execute `EXECUTAR_DASHBOARD_FINAL.bat` no PC de destino
+### **Para qualquer PC Windows:**
+1. **Copie a pasta `1 - APP` completa**
+2. **Execute `INSTALAR.bat`** (uma vez)
+3. **Execute `EXECUTAR.bat`** (sempre)
 
 ---
 
 ## ✨ **Pasta Limpa e Funcional**
 
-Esta pasta contém apenas os arquivos essenciais e funcionais:
-- ✅ Scripts de execução funcionando
-- ✅ Script de criação de desktop app
-- ✅ Arquivos do Dashboard
-- ✅ Dados necessários
-- ✅ Documentação essencial
+- ✅ **Apenas 2 scripts:** `INSTALAR.bat` e `EXECUTAR.bat`
+- ✅ **Executável standalone:** `Dashboard_KE5Z.exe`
+- ✅ **Funciona em qualquer PC Windows**
+- ✅ **Não requer Python instalado**
+- ✅ **Instalação automática**
+- ✅ **Pronto para distribuição**
 
-**Pronto para usar e distribuir!** 🎉
+---
+
+## 🎯 **Fluxo Simples:**
+
+1. **Instalar:** `INSTALAR.bat` (uma vez)
+2. **Executar:** `EXECUTAR.bat` (sempre)
+
+**Pronto! Dashboard funcionando!** 🚀
