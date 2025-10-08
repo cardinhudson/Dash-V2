@@ -40,17 +40,17 @@ echo.
 REM Criar pasta para Python portavel
 if not exist "python_portavel" mkdir "python_portavel"
 
-REM Baixar Python portavel (versao mais recente)
-echo Baixando Python 3.11.7 portavel...
-powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.7/python-3.11.7-embed-amd64.zip' -OutFile 'python_portavel\python-3.11.7-embed-amd64.zip'}"
+REM Baixar Python portavel completo (com pip)
+echo Baixando Python 3.11.7 portavel completo...
+powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe' -OutFile 'python_portavel\python-3.11.7-amd64.exe'}"
 
-if not exist "python_portavel\python-3.11.7-embed-amd64.zip" (
+if not exist "python_portavel\python-3.11.7-amd64.exe" (
     echo ❌ Erro ao baixar Python portavel!
     echo.
     echo Tentando metodo alternativo...
     echo.
     echo Por favor, baixe manualmente o Python portavel:
-    echo https://www.python.org/ftp/python/3.11.7/python-3.11.7-embed-amd64.zip
+    echo https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe
     echo.
     echo E coloque o arquivo na pasta python_portavel\
     echo.
@@ -61,32 +61,17 @@ if not exist "python_portavel\python-3.11.7-embed-amd64.zip" (
 echo ✅ Python portavel baixado com sucesso!
 echo.
 
-echo Extraindo Python portavel...
-powershell -Command "Expand-Archive -Path 'python_portavel\python-3.11.7-embed-amd64.zip' -DestinationPath 'python_portavel\' -Force"
+echo Instalando Python portavel...
+"python_portavel\python-3.11.7-amd64.exe" /quiet InstallAllUsers=0 PrependPath=0 Include_test=0
 
 if not exist "python_portavel\python.exe" (
-    echo ❌ Erro ao extrair Python portavel!
+    echo ❌ Erro ao instalar Python portavel!
     echo.
     pause
     exit /b 1
 )
 
-echo ✅ Python portavel extraido com sucesso!
-echo.
-
-echo ===============================================
-echo    PASSO 2: CONFIGURANDO PYTHON PORTATEL
-echo ===============================================
-echo.
-
-echo Configurando Python portavel...
-
-REM Habilitar site-packages no Python portavel
-echo import site >> "python_portavel\python311._pth"
-echo. >> "python_portavel\python311._pth"
-echo import sys; sys.path.append('python_portavel\\Lib\\site-packages') >> "python_portavel\python311._pth"
-
-echo ✅ Python portavel configurado!
+echo ✅ Python portavel instalado com sucesso!
 echo.
 
 echo ===============================================
